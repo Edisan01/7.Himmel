@@ -1,0 +1,672 @@
+<!DOCTYPE html>
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><style>
+    .sc-placeholder{background:rgba(255,255,255,.3);border:1px solid rgba(0,0,0,.5);
+      border-radius:2px;box-sizing:border-box;overflow:hidden}
+    .sc-placeholder-error{padding:4px 8px;font:11px/1.4 ui-monospace,monospace;
+      color:rgba(0,0,0,.7);word-break:break-word}
+    .sc-interp.sc-missing{display:inline-block;width:1em;height:1em;overflow:hidden;
+      vertical-align:text-bottom;background:rgba(255,255,255,.3);border:1px solid rgba(0,0,0,.5);
+      border-radius:2px;box-sizing:border-box;color:transparent;
+      user-select:none}
+    .sc-host.sc-has-error{position:relative}
+    .sc-logic-error{position:absolute;top:8px;left:8px;z-index:2147483647;max-width:60ch;
+      padding:6px 10px;background:#b00020;color:#fff;font:12px/1.4 ui-monospace,monospace;
+      border-radius:4px;white-space:pre-wrap;pointer-events:none}
+    /* Mirrors PRINT_BASELINE_CSS in apps/web deck-stage-export.ts — keep both
+       in sync until dc-runtime regains a build step. */
+    @media print {
+      @page { margin: 0.5cm; }
+      html, body { print-color-adjust: exact; -webkit-print-color-adjust: exact; }
+      section, article, figure, table { break-inside: avoid; }
+      *, *::before, *::after {
+        animation-delay: -99s !important; animation-duration: .001s !important;
+        animation-iteration-count: 1 !important; animation-fill-mode: both !important;
+        animation-play-state: running !important; transition-duration: 0s !important;
+      }
+    }
+  </style>
+<style data-omelette-injected="">html,body{background:transparent}</style>
+
+
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="ext-resource-dependency" content="assets/plan-eg.png" data-resource-id="planEg">
+<meta name="ext-resource-dependency" content="assets/plan-og.png" data-resource-id="planOg">
+<meta name="ext-resource-dependency" content="assets/plan-dg.png" data-resource-id="planDg">
+<script src="./support.js"></script><style>x-dc{display:none!important}</style><script src="./react.production.min.js" integrity="sha384-DGyLxAyjq0f9SPpVevD6IgztCFlnMF6oW/XQGmfe+IsZ8TqEiDrcHkMLKI6fiB/Z" crossorigin="anonymous"></script><script src="./react-dom.production.min.js" integrity="sha384-gTGxhz21lVGYNMcdJOyq01Edg0jhn/c22nsx0kyqP0TxaV5WVdsSH1fSDUf5YJj1" crossorigin="anonymous"></script>
+<style>html,body{height:100%;margin:0}#dc-root,#dc-root>.sc-host{height:100%}</style><link rel="preconnect" href="https://fonts.googleapis.com/"><link rel="preconnect" href="https://fonts.gstatic.com/" crossorigin=""><link href="./css2" rel="stylesheet"><style>
+  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+  html,body{background:#0a0a0a;}
+  body{font-family:'Montserrat',sans-serif;color:#f8f6f2;overflow-x:hidden;-webkit-font-smoothing:antialiased;}
+  @keyframes pulse{0%,100%{box-shadow:0 0 0 0 rgba(201,169,110,0.45);}50%{box-shadow:0 0 0 9px rgba(201,169,110,0);}}
+  #cube.rotating .hotspot > div{animation-play-state:paused;}  /* Punkte während der Drehung anhalten → flüssigeres Scrollen */
+  @keyframes scrollbounce{0%,100%{transform:translateY(0);opacity:0.5;}50%{transform:translateY(6px);opacity:1;}}
+  @keyframes sevenGlow{0%{text-shadow:0 0 60px rgba(201,169,110,0.55);}50%{text-shadow:0 0 130px #C9A96E,0 0 45px #fff;}100%{text-shadow:0 0 60px rgba(201,169,110,0.55);}}
+  @keyframes flashHit{0%{opacity:0;}26%{opacity:0.92;}100%{opacity:0;}}
+  @keyframes boltFade{0%,50%{opacity:1;}100%{opacity:0;}}
+  @keyframes hintIn{from{opacity:0;}to{opacity:1;}}
+</style></head>
+<body style="">
+
+<div id="dc-root"><div class="sc-host" data-sc-name="Der 7. Himmel"><div style="background: rgb(10, 10, 10); position: relative;">
+
+  
+  
+
+  
+  <nav style="position: fixed; top: 0px; left: 0px; right: 0px; z-index: 900; display: flex; align-items: center; justify-content: space-between; padding: 0.75rem 1.05rem; background: linear-gradient(rgba(10, 10, 10, 0.9), rgba(10, 10, 10, 0)); backdrop-filter: blur(7px);">
+    <div style="font-family: &quot;Playfair Display&quot;, serif; font-size: 0.98rem; letter-spacing: 0.04em; cursor: pointer; color: rgb(248, 246, 242);">Der <span style="font-style: italic; color: rgb(201, 169, 110);">7.</span> Himmel</div>
+    <div style="display: flex; align-items: center; gap: 0.55rem;">
+      <button style="background: none; border: none; color: rgb(248, 246, 242); font-family: Montserrat, sans-serif; font-size: 0.58rem; letter-spacing: 0.2em; text-transform: uppercase; cursor: pointer; padding: 0.45rem 0.3rem;">Wohnungen</button>
+      <button style="background: rgb(201, 169, 110); border: none; color: rgb(10, 10, 10); font-family: Montserrat, sans-serif; font-weight: 500; font-size: 0.58rem; letter-spacing: 0.16em; text-transform: uppercase; cursor: pointer; padding: 0.52rem 0.9rem; border-radius: 40px;">Termin</button>
+    </div>
+  </nav>
+
+  
+  <section id="hero" style="position: relative; height: 100svh; min-height: 560px; overflow: hidden;">
+    <div style="position: absolute; inset: 0px; background-image: url(&quot;assets/hero-bg.jpg&quot;); background-size: cover; background-position: center center;"></div>
+    <div style="position: absolute; inset: 0px; background: linear-gradient(rgba(0, 0, 0, 0.15) 0%, rgba(0, 0, 0, 0.4) 55%, rgba(10, 10, 10, 0.92) 100%);"></div>
+    <div id="heroContent" style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 100%; padding: 0px 1.25rem; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 1.1rem;">
+      <h1 style="font-family: &quot;Playfair Display&quot;, serif; font-weight: 300; font-size: clamp(2.4rem, 13vw, 4rem); letter-spacing: 0.08em; display: flex; align-items: baseline; justify-content: center; line-height: 1;">
+        <span style="padding-right: 0.22em;">Der</span>
+        <span style="font-weight: 700; font-style: italic; color: rgb(201, 169, 110); padding: 0px 0.16em;">7.</span>
+        <span style="padding-left: 0.22em;">Himmel</span>
+      </h1>
+      <div style="display: flex; flex-direction: column; gap: 0.4rem;">
+        <p style="font-size: 0.62rem; letter-spacing: 0.34em; color: rgb(201, 169, 110); text-transform: uppercase;">Sieben Häuser · Ein Himmel</p>
+        <p style="font-size: 0.56rem; letter-spacing: 0.28em; color: rgba(248, 246, 242, 0.65); text-transform: uppercase;">SDC Properties · 1130 Wien · Hietzing</p>
+      </div>
+      <div style="display: flex; gap: 1.4rem; flex-wrap: wrap; justify-content: center;">
+        <div style="text-align: center;"><div style="font-family: &quot;Playfair Display&quot;, serif; font-size: 1.5rem; font-weight: 700; font-style: italic; color: rgb(201, 169, 110);">7</div><div style="font-size: 0.44rem; letter-spacing: 0.22em; color: rgba(201, 169, 110, 0.7); text-transform: uppercase; margin-top: 0.3rem;">Reihenhäuser</div></div>
+        <div style="text-align: center;"><div style="font-family: &quot;Playfair Display&quot;, serif; font-size: 1.5rem; font-weight: 300; color: rgb(248, 246, 242);">~100m²</div><div style="font-size: 0.44rem; letter-spacing: 0.22em; color: rgba(201, 169, 110, 0.7); text-transform: uppercase; margin-top: 0.3rem;">pro Einheit</div></div>
+        <div style="text-align: center;"><div style="font-family: &quot;Playfair Display&quot;, serif; font-size: 1.5rem; font-weight: 300; color: rgb(248, 246, 242);">ab €890k</div><div style="font-size: 0.44rem; letter-spacing: 0.22em; color: rgba(201, 169, 110, 0.7); text-transform: uppercase; margin-top: 0.3rem;">Kaufpreis</div></div>
+      </div>
+    </div>
+    <div style="position: absolute; bottom: 1.6rem; left: 50%; transform: translateX(-50%); display: flex; flex-direction: column; align-items: center; gap: 0.5rem; opacity: 0; animation: 0.6s ease 2.4s 1 normal forwards running hintIn;">
+      <span style="font-size: 0.48rem; letter-spacing: 0.38em; color: rgba(201, 169, 110, 0.7); text-transform: uppercase;">Entdecken</span>
+      <div style="width: 1px; height: 34px; background: linear-gradient(rgba(201, 169, 110, 0.7), transparent); animation: 1.8s ease-in-out 0s infinite normal none running scrollbounce;"></div>
+    </div>
+  </section>
+
+  
+  <div id="cubeWrap" style="position: relative; height: 480vh; background: rgb(10, 10, 10);">
+    <div id="cubeSticky" style="position: sticky; top: 0px; height: 100svh; display: flex; align-items: center; justify-content: center; overflow: hidden; background: rgb(10, 10, 10);">
+      <div id="scene" style="position: relative; width: 100vw; height: 520px; perspective: 2365.44px;">
+        <div id="cube" style="position: absolute; inset: 0px; transform-style: preserve-3d; will-change: transform; width: 924px; height: 520px; transform: rotateY(0deg);" class="">
+          <div class="face" id="f0" style="position: absolute; top: 0px; left: 0px; width: 100%; height: 100%; overflow: hidden; backface-visibility: hidden; transform: rotateY(0deg) translateZ(462px); visibility: visible;">
+            <img src="./room-0.jpg" style="width: 100%; height: 100%; object-fit: cover; display: block;">
+            <div class="hotspot" data-tooltip="klimaanlage" style="position: absolute; left: 22%; top: 40%; transform: translate(-50%, -50%); width: 44px; height: 44px; display: flex; align-items: center; justify-content: center; cursor: pointer; z-index: 10;"><div style="width: 34px; height: 34px; border-radius: 50%; border: 1.5px solid rgba(201, 169, 110, 0.65); display: flex; align-items: center; justify-content: center; animation: 2s ease 0s infinite normal none running pulse;"><div style="width: 10px; height: 10px; border-radius: 50%; background: rgb(201, 169, 110);"></div></div></div>
+            <div class="hotspot" data-tooltip="aussicht" style="position: absolute; left: 75%; top: 26%; transform: translate(-50%, -50%); width: 44px; height: 44px; display: flex; align-items: center; justify-content: center; cursor: pointer; z-index: 10;"><div style="width: 34px; height: 34px; border-radius: 50%; border: 1.5px solid rgba(201, 169, 110, 0.65); display: flex; align-items: center; justify-content: center; animation: 2s ease 0s infinite normal none running pulse;"><div style="width: 10px; height: 10px; border-radius: 50%; background: rgb(201, 169, 110);"></div></div></div>
+            <div class="hotspot" data-tooltip="terrasse" style="position: absolute; left: 48%; top: 74%; transform: translate(-50%, -50%); width: 44px; height: 44px; display: flex; align-items: center; justify-content: center; cursor: pointer; z-index: 10;"><div style="width: 34px; height: 34px; border-radius: 50%; border: 1.5px solid rgba(201, 169, 110, 0.65); display: flex; align-items: center; justify-content: center; animation: 2s ease 0s infinite normal none running pulse;"><div style="width: 10px; height: 10px; border-radius: 50%; background: rgb(201, 169, 110);"></div></div></div>
+          </div>
+          <div class="face" id="f1" style="position: absolute; top: 0px; left: 0px; width: 100%; height: 100%; overflow: hidden; backface-visibility: hidden; visibility: hidden; transform: rotateY(90deg) translateZ(462px);">
+            <img src="./room-1.jpg" style="width: 100%; height: 100%; object-fit: cover; display: block;">
+            <div class="hotspot" data-tooltip="parkett" style="position: absolute; left: 45%; top: 82%; transform: translate(-50%, -50%); width: 44px; height: 44px; display: flex; align-items: center; justify-content: center; cursor: pointer; z-index: 10;"><div style="width: 34px; height: 34px; border-radius: 50%; border: 1.5px solid rgba(201, 169, 110, 0.65); display: flex; align-items: center; justify-content: center; animation: 2s ease 0s infinite normal none running pulse;"><div style="width: 10px; height: 10px; border-radius: 50%; background: rgb(201, 169, 110);"></div></div></div>
+            <div class="hotspot" data-tooltip="bodenheizung" style="position: absolute; left: 30%; top: 68%; transform: translate(-50%, -50%); width: 44px; height: 44px; display: flex; align-items: center; justify-content: center; cursor: pointer; z-index: 10;"><div style="width: 34px; height: 34px; border-radius: 50%; border: 1.5px solid rgba(201, 169, 110, 0.65); display: flex; align-items: center; justify-content: center; animation: 2s ease 0s infinite normal none running pulse;"><div style="width: 10px; height: 10px; border-radius: 50%; background: rgb(201, 169, 110);"></div></div></div>
+            <div class="hotspot" data-tooltip="glasfront" style="position: absolute; left: 16%; top: 50%; transform: translate(-50%, -50%); width: 44px; height: 44px; display: flex; align-items: center; justify-content: center; cursor: pointer; z-index: 10;"><div style="width: 34px; height: 34px; border-radius: 50%; border: 1.5px solid rgba(201, 169, 110, 0.65); display: flex; align-items: center; justify-content: center; animation: 2s ease 0s infinite normal none running pulse;"><div style="width: 10px; height: 10px; border-radius: 50%; background: rgb(201, 169, 110);"></div></div></div>
+            <div class="hotspot" data-tooltip="kueche" style="position: absolute; left: 72%; top: 46%; transform: translate(-50%, -50%); width: 44px; height: 44px; display: flex; align-items: center; justify-content: center; cursor: pointer; z-index: 10;"><div style="width: 34px; height: 34px; border-radius: 50%; border: 1.5px solid rgba(201, 169, 110, 0.65); display: flex; align-items: center; justify-content: center; animation: 2s ease 0s infinite normal none running pulse;"><div style="width: 10px; height: 10px; border-radius: 50%; background: rgb(201, 169, 110);"></div></div></div>
+          </div>
+          <div class="face" id="f2" style="position: absolute; top: 0px; left: 0px; width: 100%; height: 100%; overflow: hidden; backface-visibility: hidden; visibility: hidden; transform: rotateY(180deg) translateZ(462px);">
+            <img src="./room-2.jpg" style="width: 100%; height: 100%; object-fit: cover; display: block;">
+            <div class="hotspot" data-tooltip="marmor" style="position: absolute; left: 50%; top: 22%; transform: translate(-50%, -50%); width: 44px; height: 44px; display: flex; align-items: center; justify-content: center; cursor: pointer; z-index: 10;"><div style="width: 34px; height: 34px; border-radius: 50%; border: 1.5px solid rgba(201, 169, 110, 0.65); display: flex; align-items: center; justify-content: center; animation: 2s ease 0s infinite normal none running pulse;"><div style="width: 10px; height: 10px; border-radius: 50%; background: rgb(201, 169, 110);"></div></div></div>
+            <div class="hotspot" data-tooltip="armatur" style="position: absolute; left: 62%; top: 64%; transform: translate(-50%, -50%); width: 44px; height: 44px; display: flex; align-items: center; justify-content: center; cursor: pointer; z-index: 10;"><div style="width: 34px; height: 34px; border-radius: 50%; border: 1.5px solid rgba(201, 169, 110, 0.65); display: flex; align-items: center; justify-content: center; animation: 2s ease 0s infinite normal none running pulse;"><div style="width: 10px; height: 10px; border-radius: 50%; background: rgb(201, 169, 110);"></div></div></div>
+            <div class="hotspot" data-tooltip="wc" style="position: absolute; left: 15%; top: 40%; transform: translate(-50%, -50%); width: 44px; height: 44px; display: flex; align-items: center; justify-content: center; cursor: pointer; z-index: 10;"><div style="width: 34px; height: 34px; border-radius: 50%; border: 1.5px solid rgba(201, 169, 110, 0.65); display: flex; align-items: center; justify-content: center; animation: 2s ease 0s infinite normal none running pulse;"><div style="width: 10px; height: 10px; border-radius: 50%; background: rgb(201, 169, 110);"></div></div></div>
+            <div class="hotspot" data-tooltip="badewanne" style="position: absolute; left: 26%; top: 56%; transform: translate(-50%, -50%); width: 44px; height: 44px; display: flex; align-items: center; justify-content: center; cursor: pointer; z-index: 10;"><div style="width: 34px; height: 34px; border-radius: 50%; border: 1.5px solid rgba(201, 169, 110, 0.65); display: flex; align-items: center; justify-content: center; animation: 2s ease 0s infinite normal none running pulse;"><div style="width: 10px; height: 10px; border-radius: 50%; background: rgb(201, 169, 110);"></div></div></div>
+            <div class="hotspot" data-tooltip="dusche" style="position: absolute; left: 78%; top: 46%; transform: translate(-50%, -50%); width: 44px; height: 44px; display: flex; align-items: center; justify-content: center; cursor: pointer; z-index: 10;"><div style="width: 34px; height: 34px; border-radius: 50%; border: 1.5px solid rgba(201, 169, 110, 0.65); display: flex; align-items: center; justify-content: center; animation: 2s ease 0s infinite normal none running pulse;"><div style="width: 10px; height: 10px; border-radius: 50%; background: rgb(201, 169, 110);"></div></div></div>
+          </div>
+          <div class="face" id="f3" style="position: absolute; top: 0px; left: 0px; width: 100%; height: 100%; overflow: hidden; backface-visibility: hidden; visibility: hidden; transform: rotateY(270deg) translateZ(462px);">
+            <img src="./room-3.jpg" style="width: 100%; height: 100%; object-fit: cover; display: block;">
+            <div class="hotspot" data-tooltip="garten" style="position: absolute; left: 50%; top: 62%; transform: translate(-50%, -50%); width: 44px; height: 44px; display: flex; align-items: center; justify-content: center; cursor: pointer; z-index: 10;"><div style="width: 34px; height: 34px; border-radius: 50%; border: 1.5px solid rgba(201, 169, 110, 0.65); display: flex; align-items: center; justify-content: center; animation: 2s ease 0s infinite normal none running pulse;"><div style="width: 10px; height: 10px; border-radius: 50%; background: rgb(201, 169, 110);"></div></div></div>
+          </div>
+          <div class="face" id="f4" style="position: absolute; top: 0px; left: 0px; width: 100%; height: 100%; overflow: hidden; backface-visibility: hidden; visibility: hidden; transform: rotateY(360deg) translateZ(462px);">
+            <img src="./room-4.jpg" style="width: 100%; height: 100%; object-fit: cover; display: block;">
+            <div class="hotspot" data-tooltip="treppe_haus" style="position: absolute; left: 45%; top: 58%; transform: translate(-50%, -50%); width: 44px; height: 44px; display: flex; align-items: center; justify-content: center; cursor: pointer; z-index: 10;"><div style="width: 34px; height: 34px; border-radius: 50%; border: 1.5px solid rgba(201, 169, 110, 0.65); display: flex; align-items: center; justify-content: center; animation: 2s ease 0s infinite normal none running pulse;"><div style="width: 10px; height: 10px; border-radius: 50%; background: rgb(201, 169, 110);"></div></div></div>
+            <div class="hotspot" data-tooltip="briefkasten" style="position: absolute; left: 20%; top: 40%; transform: translate(-50%, -50%); width: 44px; height: 44px; display: flex; align-items: center; justify-content: center; cursor: pointer; z-index: 10;"><div style="width: 34px; height: 34px; border-radius: 50%; border: 1.5px solid rgba(201, 169, 110, 0.65); display: flex; align-items: center; justify-content: center; animation: 2s ease 0s infinite normal none running pulse;"><div style="width: 10px; height: 10px; border-radius: 50%; background: rgb(201, 169, 110);"></div></div></div>
+            <div class="hotspot" data-tooltip="fahrrad" style="position: absolute; left: 62%; top: 76%; transform: translate(-50%, -50%); width: 44px; height: 44px; display: flex; align-items: center; justify-content: center; cursor: pointer; z-index: 10;"><div style="width: 34px; height: 34px; border-radius: 50%; border: 1.5px solid rgba(201, 169, 110, 0.65); display: flex; align-items: center; justify-content: center; animation: 2s ease 0s infinite normal none running pulse;"><div style="width: 10px; height: 10px; border-radius: 50%; background: rgb(201, 169, 110);"></div></div></div>
+            <div class="hotspot" data-tooltip="kinderwagen" style="position: absolute; left: 32%; top: 80%; transform: translate(-50%, -50%); width: 44px; height: 44px; display: flex; align-items: center; justify-content: center; cursor: pointer; z-index: 10;"><div style="width: 34px; height: 34px; border-radius: 50%; border: 1.5px solid rgba(201, 169, 110, 0.65); display: flex; align-items: center; justify-content: center; animation: 2s ease 0s infinite normal none running pulse;"><div style="width: 10px; height: 10px; border-radius: 50%; background: rgb(201, 169, 110);"></div></div></div>
+            <div class="hotspot" data-tooltip="lift" style="position: absolute; left: 78%; top: 44%; transform: translate(-50%, -50%); width: 44px; height: 44px; display: flex; align-items: center; justify-content: center; cursor: pointer; z-index: 10;"><div style="width: 34px; height: 34px; border-radius: 50%; border: 1.5px solid rgba(201, 169, 110, 0.65); display: flex; align-items: center; justify-content: center; animation: 2s ease 0s infinite normal none running pulse;"><div style="width: 10px; height: 10px; border-radius: 50%; background: rgb(201, 169, 110);"></div></div></div>
+          </div>
+          <div class="face" id="f5" style="position: absolute; top: 0px; left: 0px; width: 100%; height: 100%; overflow: hidden; backface-visibility: hidden; visibility: hidden; transform: rotateY(450deg) translateZ(462px);">
+            <img src="./room-5.jpg" style="width: 100%; height: 100%; object-fit: cover; display: block;">
+            <div class="hotspot" data-tooltip="carport_dach" style="position: absolute; left: 50%; top: 22%; transform: translate(-50%, -50%); width: 44px; height: 44px; display: flex; align-items: center; justify-content: center; cursor: pointer; z-index: 10;"><div style="width: 34px; height: 34px; border-radius: 50%; border: 1.5px solid rgba(201, 169, 110, 0.65); display: flex; align-items: center; justify-content: center; animation: 2s ease 0s infinite normal none running pulse;"><div style="width: 10px; height: 10px; border-radius: 50%; background: rgb(201, 169, 110);"></div></div></div>
+            <div class="hotspot" data-tooltip="carport_boden" style="position: absolute; left: 50%; top: 80%; transform: translate(-50%, -50%); width: 44px; height: 44px; display: flex; align-items: center; justify-content: center; cursor: pointer; z-index: 10;"><div style="width: 34px; height: 34px; border-radius: 50%; border: 1.5px solid rgba(201, 169, 110, 0.65); display: flex; align-items: center; justify-content: center; animation: 2s ease 0s infinite normal none running pulse;"><div style="width: 10px; height: 10px; border-radius: 50%; background: rgb(201, 169, 110);"></div></div></div>
+            <div class="hotspot" data-tooltip="carport" style="position: absolute; left: 50%; top: 56%; transform: translate(-50%, -50%); width: 44px; height: 44px; display: flex; align-items: center; justify-content: center; cursor: pointer; z-index: 10;"><div style="width: 34px; height: 34px; border-radius: 50%; border: 1.5px solid rgba(201, 169, 110, 0.65); display: flex; align-items: center; justify-content: center; animation: 2s ease 0s infinite normal none running pulse;"><div style="width: 10px; height: 10px; border-radius: 50%; background: rgb(201, 169, 110);"></div></div></div>
+          </div>
+        </div>
+      </div>
+      <div id="roomLabel" style="position: absolute; left: 1.1rem; bottom: 1.2rem; font-family: &quot;Playfair Display&quot;, serif; font-size: 1rem; font-style: italic; color: rgba(248, 246, 242, 0.92); pointer-events: none; text-shadow: rgba(0, 0, 0, 0.7) 0px 2px 12px;">Terrasse &amp; Aussicht</div>
+      <div style="position: absolute; left: 1.1rem; bottom: 0.5rem; font-size: 0.42rem; letter-spacing: 0.3em; color: rgba(201, 169, 110, 0.7); text-transform: uppercase; pointer-events: none;">Punkte antippen für Details</div>
+      <nav id="roomCounter" style="position: absolute; right: 0.85rem; top: 50%; transform: translateY(-50%); display: flex; flex-direction: column; gap: 0.65rem;">
+        <div class="room-dot" style="width: 6px; height: 6px; border-radius: 50%; background: rgb(201, 169, 110); transform: scale(1.4); transition: 0.3s;"></div>
+        <div class="room-dot" style="width: 6px; height: 6px; border-radius: 50%; background: rgba(201, 169, 110, 0.3); transition: 0.3s; transform: scale(1);"></div>
+        <div class="room-dot" style="width: 6px; height: 6px; border-radius: 50%; background: rgba(201, 169, 110, 0.3); transition: 0.3s; transform: scale(1);"></div>
+        <div class="room-dot" style="width: 6px; height: 6px; border-radius: 50%; background: rgba(201, 169, 110, 0.3); transition: 0.3s; transform: scale(1);"></div>
+        <div class="room-dot" style="width: 6px; height: 6px; border-radius: 50%; background: rgba(201, 169, 110, 0.3); transition: 0.3s; transform: scale(1);"></div>
+        <div class="room-dot" style="width: 6px; height: 6px; border-radius: 50%; background: rgba(201, 169, 110, 0.3); transition: 0.3s; transform: scale(1);"></div>
+      </nav>
+    </div>
+  </div>
+
+  
+  <section id="apartments" style="background: rgb(11, 11, 11); padding: 3.6rem 1rem 4rem; border-top: 1px solid rgba(201, 169, 110, 0.15);">
+    <p style="font-size: 0.55rem; letter-spacing: 0.3em; color: rgba(201, 169, 110, 0.65); text-align: center; text-transform: uppercase; margin-bottom: 0.7rem;">Wohnungen wählen</p>
+    <h2 style="font-family: &quot;Playfair Display&quot;, serif; font-weight: 300; font-size: 1.8rem; letter-spacing: 0.08em; text-align: center; margin-bottom: 0.5rem; color: rgb(248, 246, 242);">Ihre Wohnung im 7. Himmel</h2>
+    <p style="font-size: 0.74rem; color: rgba(248, 246, 242, 0.55); text-align: center; max-width: 360px; margin: 0px auto; line-height: 1.6;">Drei Maisonetten über drei Ebenen. Ebene wählen — Grundriss und Wohnungen erscheinen darunter.</p>
+
+    <div style="display: flex; gap: 0.5rem; justify-content: center; max-width: 460px; margin: 1.7rem auto 1.5rem;">
+      <button style="flex: 1 1 0%; padding: 0.72rem 0.4rem; border-radius: 40px; border: 1px solid rgb(201, 169, 110); font-family: Montserrat, sans-serif; font-size: 0.58rem; letter-spacing: 0.1em; text-transform: uppercase; cursor: pointer; transition: 0.25s; background: rgb(201, 169, 110); color: rgb(10, 10, 10);">Erdgeschoss</button>
+      <button style="flex: 1 1 0%; padding: 0.72rem 0.4rem; border-radius: 40px; border: 1px solid rgba(201, 169, 110, 0.25); font-family: Montserrat, sans-serif; font-size: 0.58rem; letter-spacing: 0.1em; text-transform: uppercase; cursor: pointer; transition: 0.25s; background: rgba(255, 255, 255, 0.04); color: rgba(248, 246, 242, 0.7);">1. Stock</button>
+      <button style="flex: 1 1 0%; padding: 0.72rem 0.4rem; border-radius: 40px; border: 1px solid rgba(201, 169, 110, 0.25); font-family: Montserrat, sans-serif; font-size: 0.58rem; letter-spacing: 0.1em; text-transform: uppercase; cursor: pointer; transition: 0.25s; background: rgba(255, 255, 255, 0.04); color: rgba(248, 246, 242, 0.7);">Dachgeschoss</button>
+    </div>
+
+    <div style="max-width: 560px; margin: 0px auto 1rem;">
+      
+        <div style="position: relative; width: 100%; border-radius: 14px; overflow: hidden; background: rgb(244, 241, 234); border: 0.5px solid rgba(201, 169, 110, 0.25); cursor: zoom-in;">
+          <img id="floorPlanImg" alt="Grundriss Erdgeschoss" style="width: 100%; display: block;" src="./plan-eg.png">
+          <div style="position: absolute; top: 0.7rem; right: 0.7rem; display: flex; align-items: center; gap: 0.35rem; background: rgba(10, 10, 10, 0.7); backdrop-filter: blur(4px); color: rgb(248, 246, 242); font-size: 0.5rem; letter-spacing: 0.14em; text-transform: uppercase; padding: 0.4rem 0.65rem; border-radius: 40px; pointer-events: none;">
+            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#C9A96E" stroke-width="2.4"><circle cx="11" cy="11" r="7"></circle><line x1="16.5" y1="16.5" x2="21" y2="21"></line></svg>
+            Vergrößern
+          </div>
+        </div>
+      
+      
+      <div style="text-align: center; font-size: 0.58rem; letter-spacing: 0.16em; color: rgba(201, 169, 110, 0.75); text-transform: uppercase; margin-top: 0.85rem;"><span class="sc-interp">Gartenwohnungen · eigener Garten</span></div>
+    </div>
+
+    <div style="max-width: 560px; margin: 1.2rem auto 0px; display: flex; flex-direction: column; gap: 0.7rem;">
+      
+        <div style="display: flex; align-items: center; gap: 0.8rem; padding: 0.95rem 1rem; background: rgb(20, 20, 20); border: 0.5px solid rgba(201, 169, 110, 0.18); border-radius: 12px;">
+          <div style="flex: 1 1 0%; min-width: 0px;">
+            <div style="display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap;">
+              <span style="font-family: &quot;Playfair Display&quot;, serif; font-size: 1.05rem; color: rgb(248, 246, 242);"><span class="sc-interp">Top 1</span></span>
+              <span style="font-size: 0.48rem; letter-spacing: 0.12em; text-transform: uppercase; padding: 0.16rem 0.5rem; border-radius: 20px; background: rgba(201, 169, 110, 0.16); color: rgb(201, 169, 110); border: 1px solid rgba(201, 169, 110, 0.45);"><span class="sc-interp">Verfügbar</span></span>
+            </div>
+            <div style="font-size: 0.64rem; color: rgba(248, 246, 242, 0.58); margin-top: 0.3rem; line-height: 1.5;"><span class="sc-interp">Wohnküche 38,95 m² · Garten 26,25 m² · Terrasse 9,20 m²</span></div>
+          </div>
+          <div style="text-align: right; flex-shrink: 0;">
+            <div style="font-family: &quot;Playfair Display&quot;, serif; font-size: 0.98rem; color: rgb(201, 169, 110); white-space: nowrap;"><span class="sc-interp">Auf Anfrage</span></div>
+            <button style="margin-top: 0.4rem; background: none; border: 1px solid rgba(201, 169, 110, 0.5); color: rgb(201, 169, 110); font-family: Montserrat, sans-serif; font-size: 0.52rem; letter-spacing: 0.12em; text-transform: uppercase; padding: 0.38rem 0.7rem; border-radius: 40px; cursor: pointer;">Termin</button>
+          </div>
+        </div>
+      
+        <div style="display: flex; align-items: center; gap: 0.8rem; padding: 0.95rem 1rem; background: rgb(20, 20, 20); border: 0.5px solid rgba(201, 169, 110, 0.18); border-radius: 12px;">
+          <div style="flex: 1 1 0%; min-width: 0px;">
+            <div style="display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap;">
+              <span style="font-family: &quot;Playfair Display&quot;, serif; font-size: 1.05rem; color: rgb(248, 246, 242);"><span class="sc-interp">Top 2</span></span>
+              <span style="font-size: 0.48rem; letter-spacing: 0.12em; text-transform: uppercase; padding: 0.16rem 0.5rem; border-radius: 20px; background: rgba(201, 169, 110, 0.16); color: rgb(201, 169, 110); border: 1px solid rgba(201, 169, 110, 0.45);"><span class="sc-interp">Verfügbar</span></span>
+            </div>
+            <div style="font-size: 0.64rem; color: rgba(248, 246, 242, 0.58); margin-top: 0.3rem; line-height: 1.5;"><span class="sc-interp">Wohnküche 27,25 m² · Terrasse 30,10 m² · Garten 17,65 m²</span></div>
+          </div>
+          <div style="text-align: right; flex-shrink: 0;">
+            <div style="font-family: &quot;Playfair Display&quot;, serif; font-size: 0.98rem; color: rgb(201, 169, 110); white-space: nowrap;"><span class="sc-interp">Auf Anfrage</span></div>
+            <button style="margin-top: 0.4rem; background: none; border: 1px solid rgba(201, 169, 110, 0.5); color: rgb(201, 169, 110); font-family: Montserrat, sans-serif; font-size: 0.52rem; letter-spacing: 0.12em; text-transform: uppercase; padding: 0.38rem 0.7rem; border-radius: 40px; cursor: pointer;">Termin</button>
+          </div>
+        </div>
+      
+        <div style="display: flex; align-items: center; gap: 0.8rem; padding: 0.95rem 1rem; background: rgb(20, 20, 20); border: 0.5px solid rgba(201, 169, 110, 0.18); border-radius: 12px;">
+          <div style="flex: 1 1 0%; min-width: 0px;">
+            <div style="display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap;">
+              <span style="font-family: &quot;Playfair Display&quot;, serif; font-size: 1.05rem; color: rgb(248, 246, 242);"><span class="sc-interp">Top 3</span></span>
+              <span style="font-size: 0.48rem; letter-spacing: 0.12em; text-transform: uppercase; padding: 0.16rem 0.5rem; border-radius: 20px; background: rgba(201, 169, 110, 0.16); color: rgb(201, 169, 110); border: 1px solid rgba(201, 169, 110, 0.45);"><span class="sc-interp">Verfügbar</span></span>
+            </div>
+            <div style="font-size: 0.64rem; color: rgba(248, 246, 242, 0.58); margin-top: 0.3rem; line-height: 1.5;"><span class="sc-interp">Wohnküche 28,86 m² · Garten 12,90 m² · Terrasse 13,90 m²</span></div>
+          </div>
+          <div style="text-align: right; flex-shrink: 0;">
+            <div style="font-family: &quot;Playfair Display&quot;, serif; font-size: 0.98rem; color: rgb(201, 169, 110); white-space: nowrap;"><span class="sc-interp">Auf Anfrage</span></div>
+            <button style="margin-top: 0.4rem; background: none; border: 1px solid rgba(201, 169, 110, 0.5); color: rgb(201, 169, 110); font-family: Montserrat, sans-serif; font-size: 0.52rem; letter-spacing: 0.12em; text-transform: uppercase; padding: 0.38rem 0.7rem; border-radius: 40px; cursor: pointer;">Termin</button>
+          </div>
+        </div>
+      
+    </div>
+
+    <div style="max-width: 560px; margin: 1.6rem auto 0px; text-align: center;">
+      <button style="background: none; border: 0.5px solid rgba(201, 169, 110, 0.4); color: rgba(248, 246, 242, 0.75); font-family: Montserrat, sans-serif; font-size: 0.56rem; letter-spacing: 0.18em; text-transform: uppercase; padding: 0.8rem 1.4rem; border-radius: 40px; cursor: pointer;">Gesamte Preisliste anfragen</button>
+    </div>
+  </section>
+
+  
+  <section id="kontakt" style="background: rgb(13, 13, 13); padding: 3.6rem 1rem 4rem; border-top: 1px solid rgba(201, 169, 110, 0.15);">
+    <p style="font-size: 0.55rem; letter-spacing: 0.3em; color: rgba(201, 169, 110, 0.65); text-align: center; text-transform: uppercase; margin-bottom: 0.7rem;">Besichtigung &amp; Beratung</p>
+    <h2 style="font-family: &quot;Playfair Display&quot;, serif; font-weight: 300; font-size: 1.8rem; letter-spacing: 0.08em; text-align: center; margin-bottom: 0.5rem; color: rgb(248, 246, 242);">Termin mit Julian</h2>
+    <p style="font-size: 0.74rem; color: rgba(248, 246, 242, 0.55); text-align: center; max-width: 330px; margin: 0px auto; line-height: 1.6;">Ihr direkter Ansprechpartner für „Der 7. Himmel".</p>
+
+    <div style="max-width: 520px; margin: 1.7rem auto 1.3rem; display: flex; gap: 1rem; align-items: center; background: rgb(20, 20, 20); border: 0.5px solid rgba(201, 169, 110, 0.18); border-radius: 14px; padding: 1rem;">
+      <img src="./team-3.jpg" style="width: 80px; height: 80px; border-radius: 50%; object-fit: cover; flex-shrink: 0; border: 1px solid rgba(201, 169, 110, 0.3);">
+      <div style="flex: 1 1 0%; min-width: 0px;">
+        <div style="font-family: &quot;Playfair Display&quot;, serif; font-size: 1.15rem; color: rgb(248, 246, 242);">Julian Racanel</div>
+        <div style="font-size: 0.56rem; letter-spacing: 0.12em; color: rgb(201, 169, 110); text-transform: uppercase; margin-top: 0.18rem;">Makler &amp; Vertriebsleiter</div>
+        <div style="display: flex; gap: 0.5rem; margin-top: 0.65rem;">
+          <a href="tel:+4369914011977" style="flex: 1 1 0%; text-align: center; background: rgba(255, 255, 255, 0.06); border: 0.5px solid rgba(201, 169, 110, 0.25); color: rgb(248, 246, 242); font-size: 0.56rem; letter-spacing: 0.1em; text-transform: uppercase; padding: 0.5rem 0.4rem; border-radius: 40px; text-decoration: none;">Anrufen</a>
+          <a href="mailto:office@sdc-properties.at" style="flex: 1 1 0%; text-align: center; background: rgba(255, 255, 255, 0.06); border: 0.5px solid rgba(201, 169, 110, 0.25); color: rgb(248, 246, 242); font-size: 0.56rem; letter-spacing: 0.1em; text-transform: uppercase; padding: 0.5rem 0.4rem; border-radius: 40px; text-decoration: none;">E-Mail</a>
+        </div>
+      </div>
+    </div>
+
+    <div style="max-width: 520px; margin: 0px auto; display: flex; flex-direction: column; gap: 0.65rem;">
+      <input id="bkName" type="text" placeholder="Ihr Name" style="width: 100%; padding: 0.85rem 0.9rem; background: rgb(16, 16, 16); border: 0.5px solid rgba(201, 169, 110, 0.25); border-radius: 10px; color: rgb(248, 246, 242); font-family: Montserrat, sans-serif; font-size: 0.82rem;">
+      <input id="bkContact" type="text" placeholder="Telefon oder E-Mail" style="width: 100%; padding: 0.85rem 0.9rem; background: rgb(16, 16, 16); border: 0.5px solid rgba(201, 169, 110, 0.25); border-radius: 10px; color: rgb(248, 246, 242); font-family: Montserrat, sans-serif; font-size: 0.82rem;">
+      <select style="width: 100%; padding: 0.85rem 0.9rem; background: rgb(16, 16, 16); border: 0.5px solid rgba(201, 169, 110, 0.25); border-radius: 10px; color: rgb(248, 246, 242); font-family: Montserrat, sans-serif; font-size: 0.82rem; appearance: none;">
+        <option value="">Unverbindliche Beratung</option>
+        
+          <option value="Erdgeschoss · Top 1"><span class="sc-interp">Erdgeschoss · Top 1</span></option>
+        
+          <option value="Erdgeschoss · Top 2"><span class="sc-interp">Erdgeschoss · Top 2</span></option>
+        
+          <option value="Erdgeschoss · Top 3"><span class="sc-interp">Erdgeschoss · Top 3</span></option>
+        
+          <option value="1. Stock · Top 1"><span class="sc-interp">1. Stock · Top 1</span></option>
+        
+          <option value="1. Stock · Top 2"><span class="sc-interp">1. Stock · Top 2</span></option>
+        
+          <option value="1. Stock · Top 3"><span class="sc-interp">1. Stock · Top 3</span></option>
+        
+          <option value="Dachgeschoss · Top 1"><span class="sc-interp">Dachgeschoss · Top 1</span></option>
+        
+          <option value="Dachgeschoss · Top 2"><span class="sc-interp">Dachgeschoss · Top 2</span></option>
+        
+          <option value="Dachgeschoss · Top 3"><span class="sc-interp">Dachgeschoss · Top 3</span></option>
+        
+      </select>
+      <input id="bkDate" type="text" placeholder="Wunschtermin (z.B. Sa Vormittag)" style="width: 100%; padding: 0.85rem 0.9rem; background: rgb(16, 16, 16); border: 0.5px solid rgba(201, 169, 110, 0.25); border-radius: 10px; color: rgb(248, 246, 242); font-family: Montserrat, sans-serif; font-size: 0.82rem;">
+      <textarea id="bkMsg" rows="2" placeholder="Nachricht (optional)" style="width: 100%; padding: 0.85rem 0.9rem; background: rgb(16, 16, 16); border: 0.5px solid rgba(201, 169, 110, 0.25); border-radius: 10px; color: rgb(248, 246, 242); font-family: Montserrat, sans-serif; font-size: 0.82rem; resize: vertical;"></textarea>
+      <button style="display: flex; align-items: center; justify-content: center; gap: 0.5rem; background: rgb(37, 211, 102); border: none; color: rgb(10, 10, 10); font-family: Montserrat, sans-serif; font-weight: 600; font-size: 0.74rem; letter-spacing: 0.04em; padding: 0.95rem; border-radius: 10px; cursor: pointer; margin-top: 0.2rem;">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="#0a0a0a"><path d="M.057 24l1.687-6.163a11.867 11.867 0 01-1.587-5.945C.16 5.335 5.495 0 12.05 0a11.817 11.817 0 018.413 3.488 11.824 11.824 0 013.48 8.414c-.003 6.557-5.338 11.892-11.893 11.892a11.9 11.9 0 01-5.688-1.448L.057 24zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884a9.866 9.866 0 001.51 5.26l-.999 3.648 3.978-1.001zm11.387-5.464c-.074-.124-.272-.198-.57-.347-.297-.149-1.758-.868-2.031-.967-.272-.099-.47-.149-.669.149-.198.297-.768.967-.941 1.165-.173.198-.347.223-.644.074-.297-.149-1.255-.462-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.297-.347.446-.521.151-.172.2-.296.3-.495.099-.198.05-.372-.025-.521-.075-.148-.669-1.611-.916-2.206-.242-.579-.487-.501-.669-.51l-.57-.01c-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.626.712.226 1.36.194 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.695.248-1.29.173-1.414z"></path></svg>
+        Per WhatsApp anfragen
+      </button>
+      <button style="background: none; border: 0.5px solid rgba(201, 169, 110, 0.45); color: rgb(201, 169, 110); font-family: Montserrat, sans-serif; font-size: 0.7rem; letter-spacing: 0.04em; padding: 0.85rem; border-radius: 10px; cursor: pointer;">Per E-Mail anfragen</button>
+      <p style="font-size: 0.56rem; color: rgba(248, 246, 242, 0.35); text-align: center; line-height: 1.6; margin-top: 0.2rem;">Beim Absenden öffnet sich WhatsApp bzw. Ihr E-Mail-Programm mit der fertigen Anfrage an Julian.</p>
+    </div>
+  </section>
+
+  
+  <section style="background: rgb(13, 13, 13); padding: 4rem 0px 4.5rem; border-top: 1px solid rgba(201, 169, 110, 0.15);">
+    <h2 style="font-family: &quot;Playfair Display&quot;, serif; font-weight: 300; font-size: 1.9rem; letter-spacing: 0.1em; text-align: center; margin-bottom: 0.5rem;">Das Team</h2>
+    <p style="font-size: 0.55rem; letter-spacing: 0.3em; color: rgba(201, 169, 110, 0.65); text-align: center; text-transform: uppercase; margin-bottom: 2.2rem;">SDC Properties · EBE-Studios</p>
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; padding: 0px 1rem;">
+      <div style="border-radius: 12px; overflow: hidden; position: relative; background: rgb(20, 20, 20); border: 0.5px solid rgba(201, 169, 110, 0.15); aspect-ratio: 3 / 4;">
+        <img src="./team-1.jpg" style="position: absolute; inset: 0px; width: 100%; height: 100%; object-fit: cover; display: block;">
+        <div style="position: absolute; inset: 0px; background: linear-gradient(to top, rgba(0, 0, 0, 0.85) 0%, rgba(0, 0, 0, 0.1) 55%, transparent 100%);"></div>
+        <div style="position: absolute; bottom: 0px; left: 0px; right: 0px; padding: 0.9rem; color: rgb(255, 255, 255);">
+          <h3 style="font-family: &quot;Playfair Display&quot;, serif; font-size: 1.05rem; font-weight: 400; margin-bottom: 0.15rem;">SDC Properties</h3>
+          <p style="font-size: 0.6rem; color: rgb(201, 169, 110); letter-spacing: 0.08em; margin-bottom: 0.5rem;">Projektentwickler</p>
+          <div style="display: flex; flex-wrap: wrap; gap: 0.3rem;">
+            <span style="padding: 0.18rem 0.5rem; background: rgba(255, 255, 255, 0.12); border-radius: 20px; font-size: 0.52rem; border: 1px solid rgba(201, 169, 110, 0.3);">Developer</span>
+            <span style="padding: 0.18rem 0.5rem; background: rgba(255, 255, 255, 0.12); border-radius: 20px; font-size: 0.52rem; border: 1px solid rgba(201, 169, 110, 0.3);">Immobilien</span>
+          </div>
+        </div>
+      </div>
+      <div style="border-radius: 12px; overflow: hidden; position: relative; background: rgb(20, 20, 20); border: 0.5px solid rgba(201, 169, 110, 0.15); aspect-ratio: 3 / 4;">
+        <img src="./team-2.jpg" style="position: absolute; inset: 0px; width: 100%; height: 100%; object-fit: cover; display: block;">
+        <div style="position: absolute; inset: 0px; background: linear-gradient(to top, rgba(0, 0, 0, 0.85) 0%, rgba(0, 0, 0, 0.1) 55%, transparent 100%);"></div>
+        <div style="position: absolute; bottom: 0px; left: 0px; right: 0px; padding: 0.9rem; color: rgb(255, 255, 255);">
+          <h3 style="font-family: &quot;Playfair Display&quot;, serif; font-size: 1.05rem; font-weight: 400; margin-bottom: 0.15rem; line-height: 1.15;">Dir. Peter Weissenberger</h3>
+          <p style="font-size: 0.6rem; color: rgb(201, 169, 110); letter-spacing: 0.08em; margin-bottom: 0.5rem;">Geschäftsleiter</p>
+          <div style="display: flex; flex-wrap: wrap; gap: 0.3rem;">
+            <span style="padding: 0.18rem 0.5rem; background: rgba(255, 255, 255, 0.12); border-radius: 20px; font-size: 0.52rem; border: 1px solid rgba(201, 169, 110, 0.3);">Raiffeisenbank</span>
+            <span style="padding: 0.18rem 0.5rem; background: rgba(255, 255, 255, 0.12); border-radius: 20px; font-size: 0.52rem; border: 1px solid rgba(201, 169, 110, 0.3);">Finanzierung</span>
+          </div>
+        </div>
+      </div>
+      <div style="border-radius: 12px; overflow: hidden; position: relative; background: rgb(20, 20, 20); border: 0.5px solid rgba(201, 169, 110, 0.15); aspect-ratio: 3 / 4;">
+        <img src="./team-3.jpg" style="position: absolute; inset: 0px; width: 100%; height: 100%; object-fit: cover; display: block;">
+        <div style="position: absolute; inset: 0px; background: linear-gradient(to top, rgba(0, 0, 0, 0.85) 0%, rgba(0, 0, 0, 0.1) 55%, transparent 100%);"></div>
+        <div style="position: absolute; bottom: 0px; left: 0px; right: 0px; padding: 0.9rem; color: rgb(255, 255, 255);">
+          <h3 style="font-family: &quot;Playfair Display&quot;, serif; font-size: 1.05rem; font-weight: 400; margin-bottom: 0.15rem;">Julian Racanel</h3>
+          <p style="font-size: 0.6rem; color: rgb(201, 169, 110); letter-spacing: 0.08em; margin-bottom: 0.5rem;">Makler &amp; Vertriebsleiter</p>
+          <div style="display: flex; flex-wrap: wrap; gap: 0.3rem;">
+            <span style="padding: 0.18rem 0.5rem; background: rgba(255, 255, 255, 0.12); border-radius: 20px; font-size: 0.52rem; border: 1px solid rgba(201, 169, 110, 0.3);">Vertrieb</span>
+            <span style="padding: 0.18rem 0.5rem; background: rgba(255, 255, 255, 0.12); border-radius: 20px; font-size: 0.52rem; border: 1px solid rgba(201, 169, 110, 0.3);">Verkauf</span>
+          </div>
+        </div>
+      </div>
+      <div style="border-radius: 12px; overflow: hidden; position: relative; background: rgb(20, 20, 20); border: 0.5px solid rgba(201, 169, 110, 0.15); aspect-ratio: 3 / 4;">
+        <img src="./team-4.jpg" style="position: absolute; inset: 0px; width: 100%; height: 100%; object-fit: cover; display: block;">
+        <div style="position: absolute; inset: 0px; background: linear-gradient(to top, rgba(0, 0, 0, 0.85) 0%, rgba(0, 0, 0, 0.1) 55%, transparent 100%);"></div>
+        <div style="position: absolute; bottom: 0px; left: 0px; right: 0px; padding: 0.9rem; color: rgb(255, 255, 255);">
+          <h3 style="font-family: &quot;Playfair Display&quot;, serif; font-size: 1.05rem; font-weight: 400; margin-bottom: 0.15rem;">Eduard Beches</h3>
+          <p style="font-size: 0.6rem; color: rgb(201, 169, 110); letter-spacing: 0.08em; margin-bottom: 0.5rem;">Projektleiter</p>
+          <div style="display: flex; flex-wrap: wrap; gap: 0.3rem;">
+            <span style="padding: 0.18rem 0.5rem; background: rgba(255, 255, 255, 0.12); border-radius: 20px; font-size: 0.52rem; border: 1px solid rgba(201, 169, 110, 0.3);">Bauleitung</span>
+            <span style="padding: 0.18rem 0.5rem; background: rgba(255, 255, 255, 0.12); border-radius: 20px; font-size: 0.52rem; border: 1px solid rgba(201, 169, 110, 0.3);">Planung</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  
+  <footer style="background: rgb(10, 10, 10); padding: 3rem 1.5rem 2.2rem; border-top: 0.5px solid rgba(201, 169, 110, 0.15); display: flex; flex-direction: column; gap: 2rem;">
+    <div>
+      <div style="font-family: &quot;Playfair Display&quot;, serif; font-size: 1.3rem; font-weight: 300; letter-spacing: 0.06em; margin-bottom: 0.7rem;">SDC — Der <span style="font-style: italic; color: rgb(201, 169, 110);">7.</span> Himmel</div>
+      <div style="font-size: 0.72rem; line-height: 1.9; color: rgba(248, 246, 242, 0.6);">1130 Wien · Hietzing<br>SDC Properties<br>office@sdc-properties.at</div>
+    </div>
+    <div style="display: flex; gap: 3rem; flex-wrap: wrap;">
+      <div style="display: flex; flex-direction: column; gap: 0.55rem;">
+        <h4 style="font-size: 0.5rem; letter-spacing: 0.28em; color: rgb(201, 169, 110); text-transform: uppercase; margin-bottom: 0.3rem;">Navigation</h4>
+        <a href="#" style="font-size: 0.72rem; color: rgba(248, 246, 242, 0.6); text-decoration: none;">Das Projekt</a>
+        <a href="#" style="font-size: 0.72rem; color: rgba(248, 246, 242, 0.6); text-decoration: none;">Die Häuser</a>
+        <a href="#" style="font-size: 0.72rem; color: rgba(248, 246, 242, 0.6); text-decoration: none;">Ausstattung</a>
+        <a href="#" style="font-size: 0.72rem; color: rgba(248, 246, 242, 0.6); text-decoration: none;">Kontakt</a>
+      </div>
+      <div style="display: flex; flex-direction: column; gap: 0.55rem;">
+        <h4 style="font-size: 0.5rem; letter-spacing: 0.28em; color: rgb(201, 169, 110); text-transform: uppercase; margin-bottom: 0.3rem;">Rechtliches</h4>
+        <a href="#" style="font-size: 0.72rem; color: rgba(248, 246, 242, 0.6); text-decoration: none;">Impressum</a>
+        <a href="#" style="font-size: 0.72rem; color: rgba(248, 246, 242, 0.6); text-decoration: none;">Datenschutz</a>
+        <a href="#" style="font-size: 0.72rem; color: rgba(248, 246, 242, 0.6); text-decoration: none;">AGB</a>
+      </div>
+    </div>
+    <div style="font-size: 0.58rem; letter-spacing: 0.05em; color: rgba(248, 246, 242, 0.35); border-top: 0.5px solid rgba(201, 169, 110, 0.12); padding-top: 1.3rem; line-height: 1.7;">© 2026 SDC Properties · Alle Rechte vorbehalten · Entwickelt von EBE-Studios</div>
+  </footer></div></div></div>
+<script type="text/x-dc" data-dc-script="">
+class Component extends DCLogic {
+  state = { phase: 0, floor: 'eg', selectedUnit: '' };
+
+  // EG = echte Daten aus dem Grundriss. OG/DG: Platzhalter bis Pläne vorliegen.
+  FLOORS = {
+    eg: { label: 'Erdgeschoss', meta: 'Gartenwohnungen · eigener Garten', plan: 'assets/plan-eg.png', planId: 'planEg', units: [
+      { top: 'Top 1', meta: 'Wohnküche 38,95 m² · Garten 26,25 m² · Terrasse 9,20 m²', price: null, status: 'Verfügbar' },
+      { top: 'Top 2', meta: 'Wohnküche 27,25 m² · Terrasse 30,10 m² · Garten 17,65 m²', price: null, status: 'Verfügbar' },
+      { top: 'Top 3', meta: 'Wohnküche 28,86 m² · Garten 12,90 m² · Terrasse 13,90 m²', price: null, status: 'Verfügbar' }
+    ]},
+    og: { label: '1. Stock', meta: 'Schlafetage der Maisonetten', plan: 'assets/plan-og.png', planId: 'planOg', units: [
+      { top: 'Top 1', meta: '3 Zimmer (11,85 · 11,15 · 11,85 m²) · Bad · WC · Abstellraum', price: null, status: 'Verfügbar' },
+      { top: 'Top 2', meta: '2 Zimmer (11,75 · 10,85 m²) · 2× Bad/WC', price: null, status: 'Verfügbar' },
+      { top: 'Top 3', meta: '2 Zimmer (14,20 · 13,20 m²) · Bad/WC · Vorraum', price: null, status: 'Verfügbar' }
+    ]},
+    dg: { label: 'Dachgeschoss', meta: 'Oberste Ebene mit Dachterrasse', plan: 'assets/plan-dg.png', planId: 'planDg', units: [
+      { top: 'Top 1', meta: '2 Zimmer (11,05 · 9,85 m²) · Bad/WC', price: null, status: 'Verfügbar' },
+      { top: 'Top 2', meta: 'Zimmer 15,35 m² · Bad/WC · Dachterrasse 15,00 m²', price: null, status: 'Verfügbar' },
+      { top: 'Top 3', meta: 'Zimmer 16,95 m² · Bad/WC · Dachterrasse 21,10 m²', price: null, status: 'Verfügbar' }
+    ]}
+  };
+  ORDER = ['eg', 'og', 'dg'];
+  WA = '4369914011977';                         // Julian Racanel · WhatsApp (intl.)
+  EMAIL = 'iulian_racanel@yahoo.de';            // Julian Racanel · E-Mail
+
+  statusStyle(s){
+    if(s === 'Reserviert') return { bg:'rgba(224,176,80,0.16)', color:'#E0B050', border:'rgba(224,176,80,0.45)' };
+    if(s === 'Verkauft')   return { bg:'rgba(255,255,255,0.06)', color:'rgba(248,246,242,0.4)', border:'rgba(255,255,255,0.12)' };
+    return { bg:'rgba(201,169,110,0.16)', color:'#C9A96E', border:'rgba(201,169,110,0.45)' };
+  }
+  fmtPrice(p){ return (p === null || p === undefined) ? 'Auf Anfrage' : '€ ' + (p * 1000).toLocaleString('de-DE'); }
+  // Resolve to inlined blob URL when bundled standalone; fall back to path in dev preview.
+  resolveAsset(path, id){ if(!path) return ''; if(id && window.__resources && window.__resources[id]) return window.__resources[id]; return path; }
+  scrollToId(id){ const el = document.getElementById(id); if(!el) return; window.scrollTo({ top: el.getBoundingClientRect().top + window.scrollY - 54, behavior:'smooth' }); }
+  buildMsg(){
+    const g = (id) => { const e = document.getElementById(id); return e ? e.value.trim() : ''; };
+    const apt = this.state.selectedUnit || 'Unverbindliche Beratung';
+    let t = 'Hallo Julian, ich interessiere mich für „Der 7. Himmel".\n';
+    t += 'Wohnung: ' + apt + '\n';
+    const name = g('bkName'), contact = g('bkContact'), date = g('bkDate'), msg = g('bkMsg');
+    if(name) t += 'Name: ' + name + '\n';
+    if(contact) t += 'Kontakt: ' + contact + '\n';
+    if(date) t += 'Wunschtermin: ' + date + '\n';
+    if(msg) t += 'Nachricht: ' + msg + '\n';
+    return t;
+  }
+  sendWhatsApp(){ window.open('https://wa.me/' + this.WA + '?text=' + encodeURIComponent(this.buildMsg()), '_blank'); }
+  sendEmail(){ window.location.href = 'mailto:' + this.EMAIL + '?subject=' + encodeURIComponent('Anfrage Der 7. Himmel') + '&body=' + encodeURIComponent(this.buildMsg()); }
+
+  renderVals(){
+    const p = this.state.phase;
+    const f = this.state.floor;
+    const fl = this.FLOORS[f];
+    const tabCol = (k) => k === f
+      ? { bg:'#C9A96E', color:'#0a0a0a', border:'#C9A96E' }
+      : { bg:'rgba(255,255,255,0.04)', color:'rgba(248,246,242,0.7)', border:'rgba(201,169,110,0.25)' };
+    const eg = tabCol('eg'), og = tabCol('og'), dg = tabCol('dg');
+    const units = fl.units.map((u) => {
+      const st = this.statusStyle(u.status);
+      const label = fl.label + ' · ' + u.top;
+      return {
+        top: u.top, meta: u.meta, price: this.fmtPrice(u.price), status: u.status,
+        statusBg: st.bg, statusColor: st.color, statusBorder: st.border,
+        onTermin: () => { this.setState({ selectedUnit: label }); this.scrollToId('kontakt'); }
+      };
+    });
+    const allUnits = [];
+    this.ORDER.forEach((k) => this.FLOORS[k].units.forEach((u) => allUnits.push(this.FLOORS[k].label + ' · ' + u.top)));
+    return {
+      floorLabel: fl.label, floorMeta: fl.meta, units, allUnits,
+      hasPlan: !!fl.plan, noPlan: !fl.plan, floorPlan: this.resolveAsset(fl.plan, fl.planId),
+      planAlt: 'Grundriss ' + fl.label,
+      openPlan: () => { if(fl.plan) this.openPlanLightbox(this.resolveAsset(fl.plan, fl.planId), fl.label); },
+      selectedUnit: this.state.selectedUnit,
+      egBg: eg.bg, egColor: eg.color, egBorder: eg.border,
+      ogBg: og.bg, ogColor: og.color, ogBorder: og.border,
+      dgBg: dg.bg, dgColor: dg.color, dgBorder: dg.border,
+      selEg: () => this.setState({ floor:'eg' }),
+      selOg: () => this.setState({ floor:'og' }),
+      selDg: () => this.setState({ floor:'dg' }),
+      onSelectUnit: (e) => this.setState({ selectedUnit: e.target.value }),
+      goTop: () => window.scrollTo({ top:0, behavior:'smooth' }),
+      goApartments: () => this.scrollToId('apartments'),
+      goKontakt: () => this.scrollToId('kontakt'),
+      sendWhatsApp: () => this.sendWhatsApp(),
+      sendEmail: () => this.sendEmail(),
+      showIntro: p < 4,
+      overlayOpacity: p >= 3 ? 0 : 1,
+      sevenOpacity: (p >= 1 && p < 3) ? 1 : 0,
+      cloudOpacity: p >= 2 ? 0 : 1,
+      cloudTL: p >= 2 ? 'translate(-85%,-85%)' : 'translate(0,0)',
+      cloudTR: p >= 2 ? 'translate(85%,-85%)' : 'translate(0,0)',
+      cloudBL: p >= 2 ? 'translate(-85%,85%)' : 'translate(0,0)',
+      cloudBR: p >= 2 ? 'translate(85%,85%)' : 'translate(0,0)'
+    };
+  }
+
+  componentDidUpdate(){ this.setupCube(); this.updateScroll(); this.syncPlanImg(); }
+
+  syncPlanImg(){
+    const im = document.getElementById('floorPlanImg');
+    if(!im) return;
+    const fl = this.FLOORS[this.state.floor];
+    const url = fl && fl.plan ? this.resolveAsset(fl.plan, fl.planId) : '';
+    if(url && im.getAttribute('src') !== url) im.setAttribute('src', url);
+  }
+
+  componentDidMount(){
+    this.TOOLTIPS = {
+      "aussicht":{title:"Panoramablick Wien 13.",body:"Freie Aussicht über Hietzing<br>Südwest-Ausrichtung · Glasbalustrade"},
+      "terrasse":{title:"Dachterrasse",body:"Naturstein hell · Wasseranschluss<br>Elektrischer Sonnenschutz möglich"},
+      "glasfront":{title:"Glasfront / Schiebetür",body:"Bodentiefe Verglasung · Uw 0.7<br>Dreifachverglasung · Schallschutz Kl. 4"},
+      "kueche":{title:"Einbauküche — Miele Vollausstattung",body:"Weiß grifflos · Steinarbeitsplatte<br>──────────────<br>Miele Induktionskochfeld<br>Miele Backofen mit Dampfgarer<br>Miele Kühlschrank A++<br>Miele Geschirrspüler vollintegriert<br>Miele Dunstabzug flächenbündig<br>──────────────<br>Armatur: Brushed Gold Thermostat"},
+      "badewanne":{title:"Freistehende Badewanne",body:"Material: Sanitäracryl · ca. 170×75cm<br>Armatur: Brushed Gold"},
+      "dusche":{title:"Walk-In Dusche",body:"Rahmenlose Glasabtrennung<br>Regendusche Ø30cm · Brushed Gold"},
+      "garten":{title:"Privatgarten",body:"Professionelle Gartenplanung<br>Bewässerungssystem optional<br>Hecke & Rasenfläche inklusive"},
+      "klimaanlage":{title:"Klimaanlage",body:"Alle Wohnungen klimatisiert<br>Heizen & Kühlen · Klasse A++"},
+      "parkett":{title:"Echtholzparkett",body:"Eiche geölt, Fischgrätmuster<br>Österreichischer Hersteller · 15mm"},
+      "bodenheizung":{title:"Fußbodenheizung",body:"Niedrigtemperatur-System<br>Gesamte Wohnfläche · Klasse A+"},
+      "marmor":{title:"Calacatta Marmor",body:"Wand & Boden · 120×60cm<br>LED-Hinterleuchtung · Italien"},
+      "armatur":{title:"Armaturen",body:"Oberfläche: Brushed Gold<br>Thermostatmischer · Premium-Sanitär"},
+      "wc":{title:"WC & Bidet",body:"Wand-WC + Bidet · Softclose<br>Spülrandlos"},
+      "treppe_haus":{title:"Gemeinschaftstreppe",body:"Terrazzo-Belag<br>LED-Stufenbeleuchtung<br>Schwarzes Stahlgeländer"},
+      "briefkasten":{title:"Briefkastenanlage",body:"Individuell beschriftet<br>Gold-Oberfläche · 7 Einheiten"},
+      "fahrrad":{title:"Fahrradraum",body:"Abschließbar · Wandhalterungen<br>E-Bike Lademöglichkeit<br>Zugang mit Chip/Code"},
+      "kinderwagen":{title:"Kinderwagenraum",body:"Separater Abstellraum EG<br>Beleuchtet · Videoüberwachung"},
+      "lift":{title:"Personenlift",body:"Barrierefrei · alle Etagen<br>Spiegelverkleidung · LED-Beleuchtung"},
+      "carport":{title:"Überdachter Carport",body:"7 Stellplätze · 1 pro Einheit<br>Pflastersteinboden<br>E-Lademöglichkeit vorgerüstet"},
+      "carport_dach":{title:"Carport-Dachstruktur",body:"Stahl pulverbeschichtet anthrazit<br>Witterungsbeständig<br>Lichtdurchlässig"},
+      "carport_boden":{title:"Außenbelag",body:"Natursteinpflaster<br>Versickerungsfähig<br>Frostbeständig"}
+    };
+    this.labels = ['Terrasse & Aussicht','Wohnen & Küche','Badezimmer','Gartenwohnung','Eingangsbereich','Carport'];
+
+    this.setupCube();
+    this.updateScroll();
+    this.syncPlanImg();
+
+    this._hasScrollEnd = ('onscrollend' in window);
+    this._onScroll = () => { this.updateScroll(); if(!this._hasScrollEnd) this.scheduleSnap(); };
+    window.addEventListener('scroll', this._onScroll, {passive:true});
+    this._onScrollEnd = () => { this.snapToNearest(); };
+    window.addEventListener('scrollend', this._onScrollEnd, {passive:true});
+    this._onTouch = () => { clearTimeout(this._snapTimer); cancelAnimationFrame(this._snapRAF); clearTimeout(this._snapWatchdog); this._snapping = false; };
+    this._onTouchEnd = () => { if(!this._hasScrollEnd) this.scheduleSnap(); };
+    window.addEventListener('touchstart', this._onTouch, {passive:true});
+    window.addEventListener('touchend', this._onTouchEnd, {passive:true});
+    this._onResize = () => { this.setupCube(); this.updateScroll(); };
+    window.addEventListener('resize', this._onResize);
+    this._onClick = (e) => {
+      const hs = e.target.closest && e.target.closest('.hotspot');
+      if(hs){ e.stopPropagation(); this.showTooltip(hs.dataset.tooltip); }
+    };
+    document.addEventListener('click', this._onClick);
+
+    // Intro: lock scroll, advance phases via state (guaranteed unmount), fire lightning, unlock.
+    document.body.style.overflow = 'hidden';
+    try { window.scrollTo(0,0); } catch(e){}
+    this._timers = [];
+    this._timers.push(setTimeout(() => this.setState({phase:1}), 200));
+    this._timers.push(setTimeout(() => this.drawBolt(), 540));
+    this._timers.push(setTimeout(() => this.setState({phase:2}), 1000));
+    this._timers.push(setTimeout(() => this.setState({phase:3}), 2150));
+    this._timers.push(setTimeout(() => { this.setState({phase:4}); document.body.style.overflow = ''; }, 2700));
+  }
+
+  componentWillUnmount(){
+    window.removeEventListener('scroll', this._onScroll);
+    window.removeEventListener('scrollend', this._onScrollEnd);
+    window.removeEventListener('resize', this._onResize);
+    window.removeEventListener('touchstart', this._onTouch);
+    window.removeEventListener('touchend', this._onTouchEnd);
+    document.removeEventListener('click', this._onClick);
+    (this._timers || []).forEach(clearTimeout);
+    clearTimeout(this._snapTimer); cancelAnimationFrame(this._snapRAF); clearTimeout(this._snapWatchdog);
+    document.body.style.overflow = '';
+    this.closeTooltip();
+  }
+
+  $(id){ return document.getElementById(id); }
+
+  setupCube(){
+    const scene = this.$('scene'); if(!scene) return;
+    const FW = scene.clientWidth;
+    const FH = Math.round(FW * 0.5625);
+    scene.style.height = FH + 'px';
+    scene.style.perspective = (FW * 2.56) + 'px'; // width-proportional → consistent framing on any device
+    const cube = this.$('cube');
+    cube.style.width = FW + 'px';
+    cube.style.height = FH + 'px';
+    document.querySelectorAll('.face').forEach((f, i) => { f.style.transform = `rotateY(${i*90}deg) translateZ(${FW/2}px)`; });
+  }
+
+  updateScroll(){
+    const wrap = this.$('cubeWrap'), sticky = this.$('cubeSticky'), cube = this.$('cube');
+    if(!wrap || !sticky || !cube) return;
+    const range = wrap.offsetHeight - sticky.offsetHeight;
+    const scrolled = -wrap.getBoundingClientRect().top;
+    const p = range > 0 ? Math.max(0, Math.min(1, scrolled / range)) : 0;
+    const ff = p * 5;
+    const fi = Math.floor(ff);
+    const fp = ff - fi;
+    cube.style.transform = `rotateY(${-(fi*90 + fp*90)}deg)`;
+    cube.classList.add('rotating');
+    clearTimeout(this._idleT);
+    this._idleT = setTimeout(() => cube.classList.remove('rotating'), 200);
+    document.querySelectorAll('.face').forEach((f, i) => { f.style.visibility = Math.abs(ff - i) < 1 ? 'visible' : 'hidden'; });
+    const cur = Math.min(Math.round(ff), 5);
+    const rl = this.$('roomLabel'); if(rl) rl.textContent = this.labels[cur];
+    document.querySelectorAll('.room-dot').forEach((d, i) => {
+      const on = i === cur;
+      d.style.background = on ? '#C9A96E' : 'rgba(201,169,110,0.3)';
+      d.style.transform = on ? 'scale(1.4)' : 'scale(1)';
+    });
+  }
+
+  // Magnetisches Einrasten: nach Scroll-Stillstand zur nächstgelegenen Würfelseite gleiten.
+  scheduleSnap(){
+    if(this._snapping) return;
+    clearTimeout(this._snapTimer);
+    this._snapTimer = setTimeout(() => this.snapToNearest(), 170);
+  }
+  snapToNearest(){
+    if(this._snapping) return;
+    const wrap = this.$('cubeWrap'), sticky = this.$('cubeSticky');
+    if(!wrap || !sticky) return;
+    const range = wrap.offsetHeight - sticky.offsetHeight;
+    if(range <= 0) return;
+    const scrolled = -wrap.getBoundingClientRect().top;
+    // Nur innerhalb der Würfel-Sektion einrasten (sonst Durchscrollen erlauben).
+    if(scrolled < -4 || scrolled > range + 4) return;
+    const ff = (scrolled / range) * 5;
+    const nearest = Math.max(0, Math.min(5, Math.round(ff)));   // >Hälfte → nächste Seite
+    const targetScrolled = (nearest / 5) * range;
+    const delta = targetScrolled - scrolled;
+    if(Math.abs(delta) < 2) return;                              // schon ausgerichtet
+    this._snapping = true;
+    this.animateScrollTo(window.scrollY + delta, 420);
+  }
+  animateScrollTo(targetY, dur){
+    cancelAnimationFrame(this._snapRAF);
+    clearTimeout(this._snapWatchdog);
+    const startY = window.scrollY;
+    const startT = performance.now();
+    const ease = (t) => 1 - Math.pow(1 - t, 3);
+    const step = (now) => {
+      const t = Math.min((now - startT) / dur, 1);
+      window.scrollTo(0, Math.round(startY + (targetY - startY) * ease(t)));
+      if(t < 1){ this._snapRAF = requestAnimationFrame(step); }
+      else { this._snapping = false; }
+    };
+    this._snapRAF = requestAnimationFrame(step);
+    // Watchdog: garantiert Endposition + Freigabe, falls rAF aussetzt (Tab/Throttling).
+    this._snapWatchdog = setTimeout(() => {
+      cancelAnimationFrame(this._snapRAF);
+      window.scrollTo(0, Math.round(targetY));
+      this._snapping = false;
+    }, dur + 320);
+  }
+
+  showTooltip(key){
+    this.closeTooltip();
+    const d = this.TOOLTIPS[key]; if(!d) return;
+    const wrap = document.createElement('div');
+    wrap.id = 'tipOverlay';
+    wrap.style.cssText = 'position:fixed;inset:0;z-index:9500;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,0.6);padding:24px;';
+    wrap.innerHTML = '<div style="position:relative;max-width:340px;width:100%;background:rgba(13,13,13,0.98);border:0.5px solid rgba(201,169,110,0.35);border-radius:14px;padding:1.4rem 1.4rem 1.5rem;box-shadow:0 20px 60px rgba(0,0,0,0.6);">'
+      + '<button id="tipClose" style="position:absolute;top:0.5rem;right:0.7rem;background:none;border:none;color:#C9A96E;font-size:1.3rem;cursor:pointer;line-height:1;padding:0.3rem;">✕</button>'
+      + '<div style="font-family:\'Playfair Display\',serif;font-size:1.05rem;color:#C9A96E;letter-spacing:0.04em;margin-bottom:0.7rem;padding-right:1.2rem;">' + d.title + '</div>'
+      + '<div style="font-size:0.82rem;color:rgba(248,246,242,0.78);line-height:1.7;">' + d.body + '</div>'
+      + '</div>';
+    wrap.addEventListener('click', (e) => { if(e.target === wrap || e.target.id === 'tipClose') this.closeTooltip(); });
+    document.body.appendChild(wrap);
+  }
+  closeTooltip(){ const o = document.getElementById('tipOverlay'); if(o) o.remove(); }
+
+  openPlanLightbox(src, label){
+    const old = document.getElementById('planLightbox'); if(old) old.remove();
+    const wrap = document.createElement('div');
+    wrap.id = 'planLightbox';
+    wrap.style.cssText = 'position:fixed;inset:0;z-index:9600;display:flex;align-items:center;justify-content:center;background:rgba(8,8,8,0.92);padding:14px;';
+    wrap.innerHTML = '<button id="planClose" style="position:absolute;top:0.8rem;right:1rem;background:none;border:none;color:#C9A96E;font-size:1.7rem;line-height:1;cursor:pointer;z-index:2;padding:0.3rem;">✕</button>'
+      + '<div style="position:absolute;top:1.1rem;left:1.1rem;font-size:0.5rem;letter-spacing:0.22em;color:rgba(201,169,110,0.85);text-transform:uppercase;z-index:2;">Grundriss · ' + label + '</div>'
+      + '<div style="width:100%;height:100%;overflow:auto;display:flex;align-items:center;justify-content:center;">'
+      + '<img src="' + src + '" style="max-width:none;width:auto;min-width:100%;height:auto;display:block;border-radius:6px;">'
+      + '</div>';
+    wrap.addEventListener('click', (e) => { if(e.target === wrap || e.target.id === 'planClose') wrap.remove(); });
+    document.body.appendChild(wrap);
+  }
+
+  drawBolt(){
+    const c = this.$('boltCanvas'); if(!c) return;
+    const ctx = c.getContext('2d');
+    c.width = window.innerWidth; c.height = window.innerHeight;
+    const s = this.$('sevenCenter'); if(!s) return;
+    const r = s.getBoundingClientRect();
+    const tx = r.left + r.width/2, ty = r.top + r.height*0.35;
+    function seg(x1,y1,x2,y2,d){
+      if(d===0) return;
+      const mx = (x1+x2)/2 + (Math.random()-0.5)*(y2-y1)*0.3, my = (y1+y2)/2;
+      ctx.beginPath(); ctx.moveTo(x1,y1); ctx.lineTo(mx,my); ctx.lineTo(x2,y2);
+      ctx.strokeStyle='rgba(201,169,110,0.35)'; ctx.lineWidth=3; ctx.shadowColor='#C9A96E'; ctx.shadowBlur=12; ctx.stroke();
+      ctx.beginPath(); ctx.moveTo(x1,y1); ctx.lineTo(mx,my); ctx.lineTo(x2,y2);
+      ctx.strokeStyle='#fff'; ctx.lineWidth=1.4; ctx.shadowBlur=5; ctx.stroke();
+      seg(x1,y1,mx,my,d-1); seg(mx,my,x2,y2,d-1);
+    }
+    let prog = 0;
+    const iv = setInterval(() => { ctx.clearRect(0,0,c.width,c.height); prog++; seg(tx,0,tx,ty*(prog/8),3); if(prog>=8) clearInterval(iv); }, 28);
+  }
+}
+</script>
+
+
+<script type="application/json" id="__om_srcmap">{"gen":"0f19f5c0","entries":[{"id":"0f19f5c0:0","tag":"html","openStart":16,"attrEnd":21,"openEnd":22,"closeStart":61375,"closeEnd":61382,"textRuns":[[22,23],[451,452],[61374,61375]],"parentId":null,"childIds":["0f19f5c0:1","0f19f5c0:7"]},{"id":"0f19f5c0:1","tag":"head","openStart":23,"attrEnd":28,"openEnd":29,"closeStart":444,"closeEnd":451,"textRuns":[[29,30],[52,53],[121,122],[216,217],[311,312],[406,407],[443,444]],"parentId":"0f19f5c0:0","childIds":["0f19f5c0:2","0f19f5c0:3","0f19f5c0:4","0f19f5c0:5","0f19f5c0:6"]},{"id":"0f19f5c0:2","tag":"meta","openStart":30,"attrEnd":51,"openEnd":52,"closeEnd":52,"textRuns":[],"parentId":"0f19f5c0:1","childIds":[]},{"id":"0f19f5c0:3","tag":"meta","openStart":53,"attrEnd":120,"openEnd":121,"closeEnd":121,"textRuns":[],"parentId":"0f19f5c0:1","childIds":[]},{"id":"0f19f5c0:4","tag":"meta","openStart":122,"attrEnd":213,"openEnd":216,"closeEnd":216,"textRuns":[],"parentId":"0f19f5c0:1","childIds":[]},{"id":"0f19f5c0:5","tag":"meta","openStart":217,"attrEnd":308,"openEnd":311,"closeEnd":311,"textRuns":[],"parentId":"0f19f5c0:1","childIds":[]},{"id":"0f19f5c0:6","tag":"meta","openStart":312,"attrEnd":403,"openEnd":406,"closeEnd":406,"textRuns":[],"parentId":"0f19f5c0:1","childIds":[]},{"id":"0f19f5c0:7","tag":"body","openStart":452,"attrEnd":457,"openEnd":458,"closeStart":61367,"closeEnd":61374,"textRuns":[[458,459],[831,832],[42337,42338],[61366,61367]],"parentId":"0f19f5c0:0","childIds":["0f19f5c0:8","0f19f5c0:12"]},{"id":"0f19f5c0:8","tag":"template","openStart":459,"attrEnd":517,"openEnd":518,"closeStart":820,"closeEnd":831,"textRuns":[[518,521],[819,820]],"parentId":"0f19f5c0:7","childIds":["0f19f5c0:9"]},{"id":"0f19f5c0:9","tag":"svg","openStart":521,"attrEnd":583,"openEnd":584,"closeStart":813,"closeEnd":819,"textRuns":[[584,589]],"parentId":"0f19f5c0:8","childIds":["0f19f5c0:10"]},{"id":"0f19f5c0:10","tag":"rect","openStart":589,"attrEnd":635,"openEnd":637,"textRuns":[[637,642],[810,813]],"parentId":"0f19f5c0:9","childIds":["0f19f5c0:11"]},{"id":"0f19f5c0:11","tag":"text","openStart":642,"attrEnd":800,"openEnd":801,"closeStart":803,"closeEnd":810,"textRuns":[[801,803]],"parentId":"0f19f5c0:10","childIds":[]},{"id":"0f19f5c0:12","tag":"x-dc","openStart":832,"attrEnd":837,"openEnd":838,"closeStart":42330,"closeEnd":42337,"textRuns":[[838,839],[2119,2121],[42329,42330]],"parentId":"0f19f5c0:7","childIds":["0f19f5c0:13","0f19f5c0:17"]},{"id":"0f19f5c0:13","tag":"helmet","openStart":839,"attrEnd":846,"openEnd":847,"closeStart":2110,"closeEnd":2119,"textRuns":[[847,848],[907,908],[976,977],[1163,1164],[2109,2110]],"parentId":"0f19f5c0:12","childIds":["0f19f5c0:14","0f19f5c0:15","0f19f5c0:16"]},{"id":"0f19f5c0:14","tag":"link","openStart":848,"attrEnd":906,"openEnd":907,"closeEnd":907,"textRuns":[],"parentId":"0f19f5c0:13","childIds":[]},{"id":"0f19f5c0:15","tag":"link","openStart":908,"attrEnd":975,"openEnd":976,"closeEnd":976,"textRuns":[],"parentId":"0f19f5c0:13","childIds":[]},{"id":"0f19f5c0:16","tag":"link","openStart":977,"attrEnd":1162,"openEnd":1163,"closeEnd":1163,"textRuns":[],"parentId":"0f19f5c0:13","childIds":[]},{"id":"0f19f5c0:17","tag":"div","openStart":2121,"attrEnd":2171,"openEnd":2172,"closeStart":42323,"closeEnd":42329,"styleAttr":[2133,2170],"textRuns":[[2172,2176],[2236,2239],[4514,4518],[4534,4537],[5657,5661],[5674,5677],[8621,8625],[8646,8649],[22993,22997],[23028,23031],[28870,28874],[28899,28902],[34668,34672],[34685,34688],[40217,40221],[40236,40239],[42321,42323]],"parentId":"0f19f5c0:12","childIds":["0f19f5c0:18","0f19f5c0:28","0f19f5c0:34","0f19f5c0:58","0f19f5c0:146","0f19f5c0:181","0f19f5c0:206","0f19f5c0:246"]},{"id":"0f19f5c0:18","tag":"sc-if","openStart":2239,"attrEnd":2303,"openEnd":2304,"closeStart":4506,"closeEnd":4514,"textRuns":[[2304,2307],[4503,4506]],"parentId":"0f19f5c0:17","childIds":["0f19f5c0:19"]},{"id":"0f19f5c0:19","tag":"div","openStart":2307,"attrEnd":2538,"openEnd":2539,"closeStart":4497,"closeEnd":4503,"styleAttr":[2337,2537],"textRuns":[[2539,2544],[2622,2627],[2916,2921],[3211,3216],[3508,3513],[3806,3811],[4195,4200],[4353,4358],[4494,4497]],"parentId":"0f19f5c0:18","childIds":["0f19f5c0:20","0f19f5c0:21","0f19f5c0:22","0f19f5c0:23","0f19f5c0:24","0f19f5c0:25","0f19f5c0:26","0f19f5c0:27"]},{"id":"0f19f5c0:20","tag":"div","openStart":2544,"attrEnd":2615,"openEnd":2616,"closeStart":2616,"closeEnd":2622,"styleAttr":[2556,2614],"textRuns":[],"parentId":"0f19f5c0:19","childIds":[]},{"id":"0f19f5c0:21","tag":"img","openStart":2627,"attrEnd":2915,"openEnd":2916,"closeEnd":2916,"styleAttr":[2678,2914],"textRuns":[],"parentId":"0f19f5c0:19","childIds":[]},{"id":"0f19f5c0:22","tag":"img","openStart":2921,"attrEnd":3210,"openEnd":3211,"closeEnd":3211,"styleAttr":[2972,3209],"textRuns":[],"parentId":"0f19f5c0:19","childIds":[]},{"id":"0f19f5c0:23","tag":"img","openStart":3216,"attrEnd":3507,"openEnd":3508,"closeEnd":3508,"styleAttr":[3267,3506],"textRuns":[],"parentId":"0f19f5c0:19","childIds":[]},{"id":"0f19f5c0:24","tag":"img","openStart":3513,"attrEnd":3805,"openEnd":3806,"closeEnd":3806,"styleAttr":[3564,3804],"textRuns":[],"parentId":"0f19f5c0:19","childIds":[]},{"id":"0f19f5c0:25","tag":"div","openStart":3811,"attrEnd":4186,"openEnd":4187,"closeStart":4189,"closeEnd":4195,"styleAttr":[3840,4185],"textRuns":[[4187,4189]],"parentId":"0f19f5c0:19","childIds":[]},{"id":"0f19f5c0:26","tag":"canvas","openStart":4200,"attrEnd":4343,"openEnd":4344,"closeStart":4344,"closeEnd":4353,"styleAttr":[4231,4342],"textRuns":[],"parentId":"0f19f5c0:19","childIds":[]},{"id":"0f19f5c0:27","tag":"div","openStart":4358,"attrEnd":4487,"openEnd":4488,"closeStart":4488,"closeEnd":4494,"styleAttr":[4370,4486],"textRuns":[],"parentId":"0f19f5c0:19","childIds":[]},{"id":"0f19f5c0:28","tag":"nav","openStart":4537,"attrEnd":4818,"openEnd":4819,"closeStart":5651,"closeEnd":5657,"styleAttr":[4549,4817],"textRuns":[[4819,4824],[5039,5044],[5648,5651]],"parentId":"0f19f5c0:17","childIds":["0f19f5c0:29","0f19f5c0:31"]},{"id":"0f19f5c0:29","tag":"div","openStart":4824,"attrEnd":4965,"openEnd":4966,"closeStart":5033,"closeEnd":5039,"styleAttr":[4858,4964],"textRuns":[[4966,4970],[5026,5033]],"parentId":"0f19f5c0:28","childIds":["0f19f5c0:30"]},{"id":"0f19f5c0:30","tag":"span","openStart":4970,"attrEnd":5016,"openEnd":5017,"closeStart":5019,"closeEnd":5026,"styleAttr":[4983,5015],"textRuns":[[5017,5019]],"parentId":"0f19f5c0:29","childIds":[]},{"id":"0f19f5c0:31","tag":"div","openStart":5044,"attrEnd":5101,"openEnd":5102,"closeStart":5642,"closeEnd":5648,"styleAttr":[5056,5100],"textRuns":[[5102,5109],[5353,5360],[5637,5642]],"parentId":"0f19f5c0:28","childIds":["0f19f5c0:32","0f19f5c0:33"]},{"id":"0f19f5c0:32","tag":"button","openStart":5109,"attrEnd":5334,"openEnd":5335,"closeStart":5344,"closeEnd":5353,"styleAttr":[5153,5333],"textRuns":[[5335,5344]],"parentId":"0f19f5c0:31","childIds":[]},{"id":"0f19f5c0:33","tag":"button","openStart":5360,"attrEnd":5621,"openEnd":5622,"closeStart":5628,"closeEnd":5637,"styleAttr":[5401,5620],"textRuns":[[5622,5628]],"parentId":"0f19f5c0:31","childIds":[]},{"id":"0f19f5c0:34","tag":"section","openStart":5677,"attrEnd":5769,"openEnd":5770,"closeStart":8611,"closeEnd":8621,"styleAttr":[5703,5768],"textRuns":[[5770,5775],[5911,5916],[6065,6070],[8093,8098],[8608,8611]],"parentId":"0f19f5c0:17","childIds":["0f19f5c0:35","0f19f5c0:36","0f19f5c0:37","0f19f5c0:55"]},{"id":"0f19f5c0:35","tag":"div","openStart":5775,"attrEnd":5904,"openEnd":5905,"closeStart":5905,"closeEnd":5911,"styleAttr":[5787,5903],"textRuns":[],"parentId":"0f19f5c0:34","childIds":[]},{"id":"0f19f5c0:36","tag":"div","openStart":5916,"attrEnd":6058,"openEnd":6059,"closeStart":6059,"closeEnd":6065,"styleAttr":[5928,6057],"textRuns":[],"parentId":"0f19f5c0:34","childIds":[]},{"id":"0f19f5c0:37","tag":"div","openStart":6070,"attrEnd":6278,"openEnd":6279,"closeStart":8087,"closeEnd":8093,"styleAttr":[6099,6277],"textRuns":[[6279,6286],[6701,6708],[7071,7078],[8082,8087]],"parentId":"0f19f5c0:34","childIds":["0f19f5c0:38","0f19f5c0:42","0f19f5c0:45"]},{"id":"0f19f5c0:38","tag":"h1","openStart":6286,"attrEnd":6478,"openEnd":6479,"closeStart":6696,"closeEnd":6701,"styleAttr":[6297,6477],"textRuns":[[6479,6488],[6534,6543],[6632,6641],[6689,6696]],"parentId":"0f19f5c0:37","childIds":["0f19f5c0:39","0f19f5c0:40","0f19f5c0:41"]},{"id":"0f19f5c0:39","tag":"span","openStart":6488,"attrEnd":6523,"openEnd":6524,"closeStart":6527,"closeEnd":6534,"styleAttr":[6501,6522],"textRuns":[[6524,6527]],"parentId":"0f19f5c0:38","childIds":[]},{"id":"0f19f5c0:40","tag":"span","openStart":6543,"attrEnd":6622,"openEnd":6623,"closeStart":6625,"closeEnd":6632,"styleAttr":[6556,6621],"textRuns":[[6623,6625]],"parentId":"0f19f5c0:38","childIds":[]},{"id":"0f19f5c0:41","tag":"span","openStart":6641,"attrEnd":6675,"openEnd":6676,"closeStart":6682,"closeEnd":6689,"styleAttr":[6654,6674],"textRuns":[[6676,6682]],"parentId":"0f19f5c0:38","childIds":[]},{"id":"0f19f5c0:42","tag":"div","openStart":6708,"attrEnd":6767,"openEnd":6768,"closeStart":7065,"closeEnd":7071,"styleAttr":[6720,6766],"textRuns":[[6768,6777],[6900,6909],[7058,7065]],"parentId":"0f19f5c0:37","childIds":["0f19f5c0:43","0f19f5c0:44"]},{"id":"0f19f5c0:43","tag":"p","openStart":6777,"attrEnd":6867,"openEnd":6868,"closeStart":6896,"closeEnd":6900,"styleAttr":[6787,6866],"textRuns":[[6868,6896]],"parentId":"0f19f5c0:42","childIds":[]},{"id":"0f19f5c0:44","tag":"p","openStart":6909,"attrEnd":7014,"openEnd":7015,"closeStart":7054,"closeEnd":7058,"styleAttr":[6919,7013],"textRuns":[[7015,7054]],"parentId":"0f19f5c0:42","childIds":[]},{"id":"0f19f5c0:45","tag":"div","openStart":7078,"attrEnd":7153,"openEnd":7154,"closeStart":8076,"closeEnd":8082,"styleAttr":[7090,7152],"textRuns":[[7154,7163],[7468,7477],[7768,7777],[8069,8076]],"parentId":"0f19f5c0:37","childIds":["0f19f5c0:46","0f19f5c0:49","0f19f5c0:52"]},{"id":"0f19f5c0:46","tag":"div","openStart":7163,"attrEnd":7194,"openEnd":7195,"closeStart":7462,"closeEnd":7468,"styleAttr":[7175,7193],"textRuns":[],"parentId":"0f19f5c0:45","childIds":["0f19f5c0:47","0f19f5c0:48"]},{"id":"0f19f5c0:47","tag":"div","openStart":7195,"attrEnd":7310,"openEnd":7311,"closeStart":7312,"closeEnd":7318,"styleAttr":[7207,7309],"textRuns":[[7311,7312]],"parentId":"0f19f5c0:46","childIds":[]},{"id":"0f19f5c0:48","tag":"div","openStart":7318,"attrEnd":7442,"openEnd":7443,"closeStart":7456,"closeEnd":7462,"styleAttr":[7330,7441],"textRuns":[[7443,7456]],"parentId":"0f19f5c0:46","childIds":[]},{"id":"0f19f5c0:49","tag":"div","openStart":7477,"attrEnd":7508,"openEnd":7509,"closeStart":7762,"closeEnd":7768,"styleAttr":[7489,7507],"textRuns":[],"parentId":"0f19f5c0:45","childIds":["0f19f5c0:50","0f19f5c0:51"]},{"id":"0f19f5c0:50","tag":"div","openStart":7509,"attrEnd":7606,"openEnd":7607,"closeStart":7614,"closeEnd":7620,"styleAttr":[7521,7605],"textRuns":[[7607,7614]],"parentId":"0f19f5c0:49","childIds":[]},{"id":"0f19f5c0:51","tag":"div","openStart":7620,"attrEnd":7744,"openEnd":7745,"closeStart":7756,"closeEnd":7762,"styleAttr":[7632,7743],"textRuns":[[7745,7756]],"parentId":"0f19f5c0:49","childIds":[]},{"id":"0f19f5c0:52","tag":"div","openStart":7777,"attrEnd":7808,"openEnd":7809,"closeStart":8063,"closeEnd":8069,"styleAttr":[7789,7807],"textRuns":[],"parentId":"0f19f5c0:45","childIds":["0f19f5c0:53","0f19f5c0:54"]},{"id":"0f19f5c0:53","tag":"div","openStart":7809,"attrEnd":7906,"openEnd":7907,"closeStart":7917,"closeEnd":7923,"styleAttr":[7821,7905],"textRuns":[[7907,7917]],"parentId":"0f19f5c0:52","childIds":[]},{"id":"0f19f5c0:54","tag":"div","openStart":7923,"attrEnd":8047,"openEnd":8048,"closeStart":8057,"closeEnd":8063,"styleAttr":[7935,8046],"textRuns":[[8048,8057]],"parentId":"0f19f5c0:52","childIds":[]},{"id":"0f19f5c0:55","tag":"div","openStart":8098,"attrEnd":8295,"openEnd":8296,"closeStart":8602,"closeEnd":8608,"styleAttr":[8110,8294],"textRuns":[[8296,8303],[8427,8434],[8597,8602]],"parentId":"0f19f5c0:34","childIds":["0f19f5c0:56","0f19f5c0:57"]},{"id":"0f19f5c0:56","tag":"span","openStart":8303,"attrEnd":8410,"openEnd":8411,"closeStart":8420,"closeEnd":8427,"styleAttr":[8316,8409],"textRuns":[[8411,8420]],"parentId":"0f19f5c0:55","childIds":[]},{"id":"0f19f5c0:57","tag":"div","openStart":8434,"attrEnd":8590,"openEnd":8591,"closeStart":8591,"closeEnd":8597,"styleAttr":[8446,8589],"textRuns":[],"parentId":"0f19f5c0:55","childIds":[]},{"id":"0f19f5c0:58","tag":"div","openStart":8649,"attrEnd":8726,"openEnd":8727,"closeStart":22987,"closeEnd":22993,"styleAttr":[8675,8725],"textRuns":[[8727,8732],[22984,22987]],"parentId":"0f19f5c0:17","childIds":["0f19f5c0:59"]},{"id":"0f19f5c0:59","tag":"div","openStart":8732,"attrEnd":8887,"openEnd":8888,"closeStart":22978,"closeEnd":22984,"styleAttr":[8760,8886],"textRuns":[[8888,8895],[21495,21502],[21762,21769],[21973,21980],[22973,22978]],"parentId":"0f19f5c0:58","childIds":["0f19f5c0:60","0f19f5c0:137","0f19f5c0:138","0f19f5c0:139"]},{"id":"0f19f5c0:60","tag":"div","openStart":8895,"attrEnd":8983,"openEnd":8984,"closeStart":21489,"closeEnd":21495,"styleAttr":[8918,8982],"textRuns":[[8984,8993],[21482,21489]],"parentId":"0f19f5c0:59","childIds":["0f19f5c0:61"]},{"id":"0f19f5c0:61","tag":"div","openStart":8993,"attrEnd":9092,"openEnd":9093,"closeStart":21476,"closeEnd":21482,"styleAttr":[9015,9091],"textRuns":[[9093,9104],[10888,10899],[13209,13220],[16027,16038],[16817,16828],[19649,19660],[21467,21476]],"parentId":"0f19f5c0:60","childIds":["0f19f5c0:62","0f19f5c0:73","0f19f5c0:87","0f19f5c0:104","0f19f5c0:109","0f19f5c0:126"]},{"id":"0f19f5c0:62","tag":"div","openStart":9104,"attrEnd":9235,"openEnd":9236,"closeStart":10882,"closeEnd":10888,"styleAttr":[9137,9234],"textRuns":[[9236,9249],[9341,9354],[9853,9866],[10362,10375],[10871,10882]],"parentId":"0f19f5c0:61","childIds":["0f19f5c0:63","0f19f5c0:64","0f19f5c0:67","0f19f5c0:70"]},{"id":"0f19f5c0:63","tag":"img","openStart":9249,"attrEnd":9340,"openEnd":9341,"closeEnd":9341,"styleAttr":[9285,9339],"textRuns":[],"parentId":"0f19f5c0:62","childIds":[]},{"id":"0f19f5c0:64","tag":"div","openStart":9354,"attrEnd":9580,"openEnd":9581,"closeStart":9847,"closeEnd":9853,"styleAttr":[9409,9579],"textRuns":[],"parentId":"0f19f5c0:62","childIds":["0f19f5c0:65"]},{"id":"0f19f5c0:65","tag":"div","openStart":9581,"attrEnd":9760,"openEnd":9761,"closeStart":9841,"closeEnd":9847,"styleAttr":[9593,9759],"textRuns":[],"parentId":"0f19f5c0:64","childIds":["0f19f5c0:66"]},{"id":"0f19f5c0:66","tag":"div","openStart":9761,"attrEnd":9834,"openEnd":9835,"closeStart":9835,"closeEnd":9841,"styleAttr":[9773,9833],"textRuns":[],"parentId":"0f19f5c0:65","childIds":[]},{"id":"0f19f5c0:67","tag":"div","openStart":9866,"attrEnd":10089,"openEnd":10090,"closeStart":10356,"closeEnd":10362,"styleAttr":[9918,10088],"textRuns":[],"parentId":"0f19f5c0:62","childIds":["0f19f5c0:68"]},{"id":"0f19f5c0:68","tag":"div","openStart":10090,"attrEnd":10269,"openEnd":10270,"closeStart":10350,"closeEnd":10356,"styleAttr":[10102,10268],"textRuns":[],"parentId":"0f19f5c0:67","childIds":["0f19f5c0:69"]},{"id":"0f19f5c0:69","tag":"div","openStart":10270,"attrEnd":10343,"openEnd":10344,"closeStart":10344,"closeEnd":10350,"styleAttr":[10282,10342],"textRuns":[],"parentId":"0f19f5c0:68","childIds":[]},{"id":"0f19f5c0:70","tag":"div","openStart":10375,"attrEnd":10598,"openEnd":10599,"closeStart":10865,"closeEnd":10871,"styleAttr":[10427,10597],"textRuns":[],"parentId":"0f19f5c0:62","childIds":["0f19f5c0:71"]},{"id":"0f19f5c0:71","tag":"div","openStart":10599,"attrEnd":10778,"openEnd":10779,"closeStart":10859,"closeEnd":10865,"styleAttr":[10611,10777],"textRuns":[],"parentId":"0f19f5c0:70","childIds":["0f19f5c0:72"]},{"id":"0f19f5c0:72","tag":"div","openStart":10779,"attrEnd":10852,"openEnd":10853,"closeStart":10853,"closeEnd":10859,"styleAttr":[10791,10851],"textRuns":[],"parentId":"0f19f5c0:71","childIds":[]},{"id":"0f19f5c0:73","tag":"div","openStart":10899,"attrEnd":11048,"openEnd":11049,"closeStart":13203,"closeEnd":13209,"styleAttr":[10932,11047],"textRuns":[[11049,11062],[11154,11167],[11662,11675],[12175,12188],[12685,12698],[13192,13203]],"parentId":"0f19f5c0:61","childIds":["0f19f5c0:74","0f19f5c0:75","0f19f5c0:78","0f19f5c0:81","0f19f5c0:84"]},{"id":"0f19f5c0:74","tag":"img","openStart":11062,"attrEnd":11153,"openEnd":11154,"closeEnd":11154,"styleAttr":[11098,11152],"textRuns":[],"parentId":"0f19f5c0:73","childIds":[]},{"id":"0f19f5c0:75","tag":"div","openStart":11167,"attrEnd":11389,"openEnd":11390,"closeStart":11656,"closeEnd":11662,"styleAttr":[11218,11388],"textRuns":[],"parentId":"0f19f5c0:73","childIds":["0f19f5c0:76"]},{"id":"0f19f5c0:76","tag":"div","openStart":11390,"attrEnd":11569,"openEnd":11570,"closeStart":11650,"closeEnd":11656,"styleAttr":[11402,11568],"textRuns":[],"parentId":"0f19f5c0:75","childIds":["0f19f5c0:77"]},{"id":"0f19f5c0:77","tag":"div","openStart":11570,"attrEnd":11643,"openEnd":11644,"closeStart":11644,"closeEnd":11650,"styleAttr":[11582,11642],"textRuns":[],"parentId":"0f19f5c0:76","childIds":[]},{"id":"0f19f5c0:78","tag":"div","openStart":11675,"attrEnd":11902,"openEnd":11903,"closeStart":12169,"closeEnd":12175,"styleAttr":[11731,11901],"textRuns":[],"parentId":"0f19f5c0:73","childIds":["0f19f5c0:79"]},{"id":"0f19f5c0:79","tag":"div","openStart":11903,"attrEnd":12082,"openEnd":12083,"closeStart":12163,"closeEnd":12169,"styleAttr":[11915,12081],"textRuns":[],"parentId":"0f19f5c0:78","childIds":["0f19f5c0:80"]},{"id":"0f19f5c0:80","tag":"div","openStart":12083,"attrEnd":12156,"openEnd":12157,"closeStart":12157,"closeEnd":12163,"styleAttr":[12095,12155],"textRuns":[],"parentId":"0f19f5c0:79","childIds":[]},{"id":"0f19f5c0:81","tag":"div","openStart":12188,"attrEnd":12412,"openEnd":12413,"closeStart":12679,"closeEnd":12685,"styleAttr":[12241,12411],"textRuns":[],"parentId":"0f19f5c0:73","childIds":["0f19f5c0:82"]},{"id":"0f19f5c0:82","tag":"div","openStart":12413,"attrEnd":12592,"openEnd":12593,"closeStart":12673,"closeEnd":12679,"styleAttr":[12425,12591],"textRuns":[],"parentId":"0f19f5c0:81","childIds":["0f19f5c0:83"]},{"id":"0f19f5c0:83","tag":"div","openStart":12593,"attrEnd":12666,"openEnd":12667,"closeStart":12667,"closeEnd":12673,"styleAttr":[12605,12665],"textRuns":[],"parentId":"0f19f5c0:82","childIds":[]},{"id":"0f19f5c0:84","tag":"div","openStart":12698,"attrEnd":12919,"openEnd":12920,"closeStart":13186,"closeEnd":13192,"styleAttr":[12748,12918],"textRuns":[],"parentId":"0f19f5c0:73","childIds":["0f19f5c0:85"]},{"id":"0f19f5c0:85","tag":"div","openStart":12920,"attrEnd":13099,"openEnd":13100,"closeStart":13180,"closeEnd":13186,"styleAttr":[12932,13098],"textRuns":[],"parentId":"0f19f5c0:84","childIds":["0f19f5c0:86"]},{"id":"0f19f5c0:86","tag":"div","openStart":13100,"attrEnd":13173,"openEnd":13174,"closeStart":13174,"closeEnd":13180,"styleAttr":[13112,13172],"textRuns":[],"parentId":"0f19f5c0:85","childIds":[]},{"id":"0f19f5c0:87","tag":"div","openStart":13220,"attrEnd":13369,"openEnd":13370,"closeStart":16021,"closeEnd":16027,"styleAttr":[13253,13368],"textRuns":[[13370,13383],[13475,13488],[13982,13995],[14490,14503],[14993,15006],[15503,15516],[16010,16021]],"parentId":"0f19f5c0:61","childIds":["0f19f5c0:88","0f19f5c0:89","0f19f5c0:92","0f19f5c0:95","0f19f5c0:98","0f19f5c0:101"]},{"id":"0f19f5c0:88","tag":"img","openStart":13383,"attrEnd":13474,"openEnd":13475,"closeEnd":13475,"styleAttr":[13419,13473],"textRuns":[],"parentId":"0f19f5c0:87","childIds":[]},{"id":"0f19f5c0:89","tag":"div","openStart":13488,"attrEnd":13709,"openEnd":13710,"closeStart":13976,"closeEnd":13982,"styleAttr":[13538,13708],"textRuns":[],"parentId":"0f19f5c0:87","childIds":["0f19f5c0:90"]},{"id":"0f19f5c0:90","tag":"div","openStart":13710,"attrEnd":13889,"openEnd":13890,"closeStart":13970,"closeEnd":13976,"styleAttr":[13722,13888],"textRuns":[],"parentId":"0f19f5c0:89","childIds":["0f19f5c0:91"]},{"id":"0f19f5c0:91","tag":"div","openStart":13890,"attrEnd":13963,"openEnd":13964,"closeStart":13964,"closeEnd":13970,"styleAttr":[13902,13962],"textRuns":[],"parentId":"0f19f5c0:90","childIds":[]},{"id":"0f19f5c0:92","tag":"div","openStart":13995,"attrEnd":14217,"openEnd":14218,"closeStart":14484,"closeEnd":14490,"styleAttr":[14046,14216],"textRuns":[],"parentId":"0f19f5c0:87","childIds":["0f19f5c0:93"]},{"id":"0f19f5c0:93","tag":"div","openStart":14218,"attrEnd":14397,"openEnd":14398,"closeStart":14478,"closeEnd":14484,"styleAttr":[14230,14396],"textRuns":[],"parentId":"0f19f5c0:92","childIds":["0f19f5c0:94"]},{"id":"0f19f5c0:94","tag":"div","openStart":14398,"attrEnd":14471,"openEnd":14472,"closeStart":14472,"closeEnd":14478,"styleAttr":[14410,14470],"textRuns":[],"parentId":"0f19f5c0:93","childIds":[]},{"id":"0f19f5c0:95","tag":"div","openStart":14503,"attrEnd":14720,"openEnd":14721,"closeStart":14987,"closeEnd":14993,"styleAttr":[14549,14719],"textRuns":[],"parentId":"0f19f5c0:87","childIds":["0f19f5c0:96"]},{"id":"0f19f5c0:96","tag":"div","openStart":14721,"attrEnd":14900,"openEnd":14901,"closeStart":14981,"closeEnd":14987,"styleAttr":[14733,14899],"textRuns":[],"parentId":"0f19f5c0:95","childIds":["0f19f5c0:97"]},{"id":"0f19f5c0:97","tag":"div","openStart":14901,"attrEnd":14974,"openEnd":14975,"closeStart":14975,"closeEnd":14981,"styleAttr":[14913,14973],"textRuns":[],"parentId":"0f19f5c0:96","childIds":[]},{"id":"0f19f5c0:98","tag":"div","openStart":15006,"attrEnd":15230,"openEnd":15231,"closeStart":15497,"closeEnd":15503,"styleAttr":[15059,15229],"textRuns":[],"parentId":"0f19f5c0:87","childIds":["0f19f5c0:99"]},{"id":"0f19f5c0:99","tag":"div","openStart":15231,"attrEnd":15410,"openEnd":15411,"closeStart":15491,"closeEnd":15497,"styleAttr":[15243,15409],"textRuns":[],"parentId":"0f19f5c0:98","childIds":["0f19f5c0:100"]},{"id":"0f19f5c0:100","tag":"div","openStart":15411,"attrEnd":15484,"openEnd":15485,"closeStart":15485,"closeEnd":15491,"styleAttr":[15423,15483],"textRuns":[],"parentId":"0f19f5c0:99","childIds":[]},{"id":"0f19f5c0:101","tag":"div","openStart":15516,"attrEnd":15737,"openEnd":15738,"closeStart":16004,"closeEnd":16010,"styleAttr":[15566,15736],"textRuns":[],"parentId":"0f19f5c0:87","childIds":["0f19f5c0:102"]},{"id":"0f19f5c0:102","tag":"div","openStart":15738,"attrEnd":15917,"openEnd":15918,"closeStart":15998,"closeEnd":16004,"styleAttr":[15750,15916],"textRuns":[],"parentId":"0f19f5c0:101","childIds":["0f19f5c0:103"]},{"id":"0f19f5c0:103","tag":"div","openStart":15918,"attrEnd":15991,"openEnd":15992,"closeStart":15992,"closeEnd":15998,"styleAttr":[15930,15990],"textRuns":[],"parentId":"0f19f5c0:102","childIds":[]},{"id":"0f19f5c0:104","tag":"div","openStart":16038,"attrEnd":16187,"openEnd":16188,"closeStart":16811,"closeEnd":16817,"styleAttr":[16071,16186],"textRuns":[[16188,16201],[16293,16306],[16800,16811]],"parentId":"0f19f5c0:61","childIds":["0f19f5c0:105","0f19f5c0:106"]},{"id":"0f19f5c0:105","tag":"img","openStart":16201,"attrEnd":16292,"openEnd":16293,"closeEnd":16293,"styleAttr":[16237,16291],"textRuns":[],"parentId":"0f19f5c0:104","childIds":[]},{"id":"0f19f5c0:106","tag":"div","openStart":16306,"attrEnd":16527,"openEnd":16528,"closeStart":16794,"closeEnd":16800,"styleAttr":[16356,16526],"textRuns":[],"parentId":"0f19f5c0:104","childIds":["0f19f5c0:107"]},{"id":"0f19f5c0:107","tag":"div","openStart":16528,"attrEnd":16707,"openEnd":16708,"closeStart":16788,"closeEnd":16794,"styleAttr":[16540,16706],"textRuns":[],"parentId":"0f19f5c0:106","childIds":["0f19f5c0:108"]},{"id":"0f19f5c0:108","tag":"div","openStart":16708,"attrEnd":16781,"openEnd":16782,"closeStart":16782,"closeEnd":16788,"styleAttr":[16720,16780],"textRuns":[],"parentId":"0f19f5c0:107","childIds":[]},{"id":"0f19f5c0:109","tag":"div","openStart":16828,"attrEnd":16977,"openEnd":16978,"closeStart":19643,"closeEnd":19649,"styleAttr":[16861,16976],"textRuns":[[16978,16991],[17083,17096],[17595,17608],[18107,18120],[18615,18628],[19127,19140],[19632,19643]],"parentId":"0f19f5c0:61","childIds":["0f19f5c0:110","0f19f5c0:111","0f19f5c0:114","0f19f5c0:117","0f19f5c0:120","0f19f5c0:123"]},{"id":"0f19f5c0:110","tag":"img","openStart":16991,"attrEnd":17082,"openEnd":17083,"closeEnd":17083,"styleAttr":[17027,17081],"textRuns":[],"parentId":"0f19f5c0:109","childIds":[]},{"id":"0f19f5c0:111","tag":"div","openStart":17096,"attrEnd":17322,"openEnd":17323,"closeStart":17589,"closeEnd":17595,"styleAttr":[17151,17321],"textRuns":[],"parentId":"0f19f5c0:109","childIds":["0f19f5c0:112"]},{"id":"0f19f5c0:112","tag":"div","openStart":17323,"attrEnd":17502,"openEnd":17503,"closeStart":17583,"closeEnd":17589,"styleAttr":[17335,17501],"textRuns":[],"parentId":"0f19f5c0:111","childIds":["0f19f5c0:113"]},{"id":"0f19f5c0:113","tag":"div","openStart":17503,"attrEnd":17576,"openEnd":17577,"closeStart":17577,"closeEnd":17583,"styleAttr":[17515,17575],"textRuns":[],"parentId":"0f19f5c0:112","childIds":[]},{"id":"0f19f5c0:114","tag":"div","openStart":17608,"attrEnd":17834,"openEnd":17835,"closeStart":18101,"closeEnd":18107,"styleAttr":[17663,17833],"textRuns":[],"parentId":"0f19f5c0:109","childIds":["0f19f5c0:115"]},{"id":"0f19f5c0:115","tag":"div","openStart":17835,"attrEnd":18014,"openEnd":18015,"closeStart":18095,"closeEnd":18101,"styleAttr":[17847,18013],"textRuns":[],"parentId":"0f19f5c0:114","childIds":["0f19f5c0:116"]},{"id":"0f19f5c0:116","tag":"div","openStart":18015,"attrEnd":18088,"openEnd":18089,"closeStart":18089,"closeEnd":18095,"styleAttr":[18027,18087],"textRuns":[],"parentId":"0f19f5c0:115","childIds":[]},{"id":"0f19f5c0:117","tag":"div","openStart":18120,"attrEnd":18342,"openEnd":18343,"closeStart":18609,"closeEnd":18615,"styleAttr":[18171,18341],"textRuns":[],"parentId":"0f19f5c0:109","childIds":["0f19f5c0:118"]},{"id":"0f19f5c0:118","tag":"div","openStart":18343,"attrEnd":18522,"openEnd":18523,"closeStart":18603,"closeEnd":18609,"styleAttr":[18355,18521],"textRuns":[],"parentId":"0f19f5c0:117","childIds":["0f19f5c0:119"]},{"id":"0f19f5c0:119","tag":"div","openStart":18523,"attrEnd":18596,"openEnd":18597,"closeStart":18597,"closeEnd":18603,"styleAttr":[18535,18595],"textRuns":[],"parentId":"0f19f5c0:118","childIds":[]},{"id":"0f19f5c0:120","tag":"div","openStart":18628,"attrEnd":18854,"openEnd":18855,"closeStart":19121,"closeEnd":19127,"styleAttr":[18683,18853],"textRuns":[],"parentId":"0f19f5c0:109","childIds":["0f19f5c0:121"]},{"id":"0f19f5c0:121","tag":"div","openStart":18855,"attrEnd":19034,"openEnd":19035,"closeStart":19115,"closeEnd":19121,"styleAttr":[18867,19033],"textRuns":[],"parentId":"0f19f5c0:120","childIds":["0f19f5c0:122"]},{"id":"0f19f5c0:122","tag":"div","openStart":19035,"attrEnd":19108,"openEnd":19109,"closeStart":19109,"closeEnd":19115,"styleAttr":[19047,19107],"textRuns":[],"parentId":"0f19f5c0:121","childIds":[]},{"id":"0f19f5c0:123","tag":"div","openStart":19140,"attrEnd":19359,"openEnd":19360,"closeStart":19626,"closeEnd":19632,"styleAttr":[19188,19358],"textRuns":[],"parentId":"0f19f5c0:109","childIds":["0f19f5c0:124"]},{"id":"0f19f5c0:124","tag":"div","openStart":19360,"attrEnd":19539,"openEnd":19540,"closeStart":19620,"closeEnd":19626,"styleAttr":[19372,19538],"textRuns":[],"parentId":"0f19f5c0:123","childIds":["0f19f5c0:125"]},{"id":"0f19f5c0:125","tag":"div","openStart":19540,"attrEnd":19613,"openEnd":19614,"closeStart":19614,"closeEnd":19620,"styleAttr":[19552,19612],"textRuns":[],"parentId":"0f19f5c0:124","childIds":[]},{"id":"0f19f5c0:126","tag":"div","openStart":19660,"attrEnd":19809,"openEnd":19810,"closeStart":21461,"closeEnd":21467,"styleAttr":[19693,19808],"textRuns":[[19810,19823],[19915,19928],[20428,20441],[20942,20955],[21450,21461]],"parentId":"0f19f5c0:61","childIds":["0f19f5c0:127","0f19f5c0:128","0f19f5c0:131","0f19f5c0:134"]},{"id":"0f19f5c0:127","tag":"img","openStart":19823,"attrEnd":19914,"openEnd":19915,"closeEnd":19915,"styleAttr":[19859,19913],"textRuns":[],"parentId":"0f19f5c0:126","childIds":[]},{"id":"0f19f5c0:128","tag":"div","openStart":19928,"attrEnd":20155,"openEnd":20156,"closeStart":20422,"closeEnd":20428,"styleAttr":[19984,20154],"textRuns":[],"parentId":"0f19f5c0:126","childIds":["0f19f5c0:129"]},{"id":"0f19f5c0:129","tag":"div","openStart":20156,"attrEnd":20335,"openEnd":20336,"closeStart":20416,"closeEnd":20422,"styleAttr":[20168,20334],"textRuns":[],"parentId":"0f19f5c0:128","childIds":["0f19f5c0:130"]},{"id":"0f19f5c0:130","tag":"div","openStart":20336,"attrEnd":20409,"openEnd":20410,"closeStart":20410,"closeEnd":20416,"styleAttr":[20348,20408],"textRuns":[],"parentId":"0f19f5c0:129","childIds":[]},{"id":"0f19f5c0:131","tag":"div","openStart":20441,"attrEnd":20669,"openEnd":20670,"closeStart":20936,"closeEnd":20942,"styleAttr":[20498,20668],"textRuns":[],"parentId":"0f19f5c0:126","childIds":["0f19f5c0:132"]},{"id":"0f19f5c0:132","tag":"div","openStart":20670,"attrEnd":20849,"openEnd":20850,"closeStart":20930,"closeEnd":20936,"styleAttr":[20682,20848],"textRuns":[],"parentId":"0f19f5c0:131","childIds":["0f19f5c0:133"]},{"id":"0f19f5c0:133","tag":"div","openStart":20850,"attrEnd":20923,"openEnd":20924,"closeStart":20924,"closeEnd":20930,"styleAttr":[20862,20922],"textRuns":[],"parentId":"0f19f5c0:132","childIds":[]},{"id":"0f19f5c0:134","tag":"div","openStart":20955,"attrEnd":21177,"openEnd":21178,"closeStart":21444,"closeEnd":21450,"styleAttr":[21006,21176],"textRuns":[],"parentId":"0f19f5c0:126","childIds":["0f19f5c0:135"]},{"id":"0f19f5c0:135","tag":"div","openStart":21178,"attrEnd":21357,"openEnd":21358,"closeStart":21438,"closeEnd":21444,"styleAttr":[21190,21356],"textRuns":[],"parentId":"0f19f5c0:134","childIds":["0f19f5c0:136"]},{"id":"0f19f5c0:136","tag":"div","openStart":21358,"attrEnd":21431,"openEnd":21432,"closeStart":21432,"closeEnd":21438,"styleAttr":[21370,21430],"textRuns":[],"parentId":"0f19f5c0:135","childIds":[]},{"id":"0f19f5c0:137","tag":"div","openStart":21502,"attrEnd":21732,"openEnd":21733,"closeStart":21756,"closeEnd":21762,"styleAttr":[21529,21731],"textRuns":[[21733,21756]],"parentId":"0f19f5c0:59","childIds":[]},{"id":"0f19f5c0:138","tag":"div","openStart":21769,"attrEnd":21938,"openEnd":21939,"closeStart":21967,"closeEnd":21973,"styleAttr":[21781,21937],"textRuns":[[21939,21967]],"parentId":"0f19f5c0:59","childIds":[]},{"id":"0f19f5c0:139","tag":"nav","openStart":21980,"attrEnd":22124,"openEnd":22125,"closeStart":22967,"closeEnd":22973,"styleAttr":[22009,22123],"textRuns":[[22125,22134],[22270,22279],[22408,22417],[22546,22555],[22684,22693],[22822,22831],[22960,22967]],"parentId":"0f19f5c0:59","childIds":["0f19f5c0:140","0f19f5c0:141","0f19f5c0:142","0f19f5c0:143","0f19f5c0:144","0f19f5c0:145"]},{"id":"0f19f5c0:140","tag":"div","openStart":22134,"attrEnd":22263,"openEnd":22264,"closeStart":22264,"closeEnd":22270,"styleAttr":[22163,22262],"textRuns":[],"parentId":"0f19f5c0:139","childIds":[]},{"id":"0f19f5c0:141","tag":"div","openStart":22279,"attrEnd":22401,"openEnd":22402,"closeStart":22402,"closeEnd":22408,"styleAttr":[22308,22400],"textRuns":[],"parentId":"0f19f5c0:139","childIds":[]},{"id":"0f19f5c0:142","tag":"div","openStart":22417,"attrEnd":22539,"openEnd":22540,"closeStart":22540,"closeEnd":22546,"styleAttr":[22446,22538],"textRuns":[],"parentId":"0f19f5c0:139","childIds":[]},{"id":"0f19f5c0:143","tag":"div","openStart":22555,"attrEnd":22677,"openEnd":22678,"closeStart":22678,"closeEnd":22684,"styleAttr":[22584,22676],"textRuns":[],"parentId":"0f19f5c0:139","childIds":[]},{"id":"0f19f5c0:144","tag":"div","openStart":22693,"attrEnd":22815,"openEnd":22816,"closeStart":22816,"closeEnd":22822,"styleAttr":[22722,22814],"textRuns":[],"parentId":"0f19f5c0:139","childIds":[]},{"id":"0f19f5c0:145","tag":"div","openStart":22831,"attrEnd":22953,"openEnd":22954,"closeStart":22954,"closeEnd":22960,"styleAttr":[22860,22952],"textRuns":[],"parentId":"0f19f5c0:139","childIds":[]},{"id":"0f19f5c0:146","tag":"section","openStart":23031,"attrEnd":23152,"openEnd":23153,"closeStart":28860,"closeEnd":28870,"styleAttr":[23063,23151],"textRuns":[[23153,23158],[23323,23328],[23516,23521],[23746,23752],[24878,24884],[26880,26886],[28442,28448],[28857,28860]],"parentId":"0f19f5c0:17","childIds":["0f19f5c0:147","0f19f5c0:148","0f19f5c0:149","0f19f5c0:150","0f19f5c0:154","0f19f5c0:168","0f19f5c0:179"]},{"id":"0f19f5c0:147","tag":"p","openStart":23158,"attrEnd":23301,"openEnd":23302,"closeStart":23319,"closeEnd":23323,"styleAttr":[23168,23300],"textRuns":[[23302,23319]],"parentId":"0f19f5c0:146","childIds":[]},{"id":"0f19f5c0:148","tag":"h2","openStart":23328,"attrEnd":23485,"openEnd":23486,"closeStart":23511,"closeEnd":23516,"styleAttr":[23339,23484],"textRuns":[[23486,23511]],"parentId":"0f19f5c0:146","childIds":[]},{"id":"0f19f5c0:149","tag":"p","openStart":23521,"attrEnd":23643,"openEnd":23644,"closeStart":23742,"closeEnd":23746,"styleAttr":[23531,23642],"textRuns":[[23644,23742]],"parentId":"0f19f5c0:146","childIds":[]},{"id":"0f19f5c0:150","tag":"div","openStart":23752,"attrEnd":23854,"openEnd":23855,"closeStart":24872,"closeEnd":24878,"styleAttr":[23764,23853],"textRuns":[[23855,23862],[24193,24200],[24528,24535],[24867,24872]],"parentId":"0f19f5c0:146","childIds":["0f19f5c0:151","0f19f5c0:152","0f19f5c0:153"]},{"id":"0f19f5c0:151","tag":"button","openStart":23862,"attrEnd":24172,"openEnd":24173,"closeStart":24184,"closeEnd":24193,"styleAttr":[23899,24171],"textRuns":[[24173,24184]],"parentId":"0f19f5c0:150","childIds":[]},{"id":"0f19f5c0:152","tag":"button","openStart":24200,"attrEnd":24510,"openEnd":24511,"closeStart":24519,"closeEnd":24528,"styleAttr":[24237,24509],"textRuns":[[24511,24519]],"parentId":"0f19f5c0:150","childIds":[]},{"id":"0f19f5c0:153","tag":"button","openStart":24535,"attrEnd":24845,"openEnd":24846,"closeStart":24858,"closeEnd":24867,"styleAttr":[24572,24844],"textRuns":[[24846,24858]],"parentId":"0f19f5c0:150","childIds":[]},{"id":"0f19f5c0:154","tag":"div","openStart":24884,"attrEnd":24932,"openEnd":24933,"closeStart":26874,"closeEnd":26880,"styleAttr":[24896,24931],"textRuns":[[24933,24940],[25861,25868],[26696,26703],[26869,26874]],"parentId":"0f19f5c0:146","childIds":["0f19f5c0:155","0f19f5c0:162","0f19f5c0:167"]},{"id":"0f19f5c0:155","tag":"sc-if","openStart":24940,"attrEnd":25002,"openEnd":25003,"closeStart":25853,"closeEnd":25861,"textRuns":[[25003,25012],[25846,25853]],"parentId":"0f19f5c0:154","childIds":["0f19f5c0:156"]},{"id":"0f19f5c0:156","tag":"div","openStart":25012,"attrEnd":25190,"openEnd":25191,"closeStart":25840,"closeEnd":25846,"styleAttr":[25049,25189],"textRuns":[[25191,25202],[25279,25290],[25831,25840]],"parentId":"0f19f5c0:155","childIds":["0f19f5c0:157","0f19f5c0:158"]},{"id":"0f19f5c0:157","tag":"img","openStart":25202,"attrEnd":25278,"openEnd":25279,"closeEnd":25279,"styleAttr":[25252,25277],"textRuns":[],"parentId":"0f19f5c0:156","childIds":[]},{"id":"0f19f5c0:158","tag":"div","openStart":25290,"attrEnd":25585,"openEnd":25586,"closeStart":25825,"closeEnd":25831,"styleAttr":[25302,25584],"textRuns":[[25586,25599],[25789,25825]],"parentId":"0f19f5c0:156","childIds":["0f19f5c0:159"]},{"id":"0f19f5c0:159","tag":"svg","openStart":25599,"attrEnd":25694,"openEnd":25695,"closeStart":25783,"closeEnd":25789,"textRuns":[],"parentId":"0f19f5c0:158","childIds":["0f19f5c0:160","0f19f5c0:161"]},{"id":"0f19f5c0:160","tag":"circle","openStart":25695,"attrEnd":25724,"openEnd":25725,"closeStart":25725,"closeEnd":25734,"textRuns":[],"parentId":"0f19f5c0:159","childIds":[]},{"id":"0f19f5c0:161","tag":"line","openStart":25734,"attrEnd":25775,"openEnd":25776,"closeStart":25776,"closeEnd":25783,"textRuns":[],"parentId":"0f19f5c0:159","childIds":[]},{"id":"0f19f5c0:162","tag":"sc-if","openStart":25868,"attrEnd":25930,"openEnd":25931,"closeStart":26688,"closeEnd":26696,"textRuns":[[25931,25940],[26681,26688]],"parentId":"0f19f5c0:154","childIds":["0f19f5c0:163"]},{"id":"0f19f5c0:163","tag":"div","openStart":25940,"attrEnd":26284,"openEnd":26285,"closeStart":26675,"closeEnd":26681,"styleAttr":[25952,26283],"textRuns":[[26285,26296],[26418,26429],[26547,26558],[26666,26675]],"parentId":"0f19f5c0:162","childIds":["0f19f5c0:164","0f19f5c0:165","0f19f5c0:166"]},{"id":"0f19f5c0:164","tag":"div","openStart":26296,"attrEnd":26402,"openEnd":26403,"closeStart":26412,"closeEnd":26418,"styleAttr":[26308,26401],"textRuns":[[26403,26412]],"parentId":"0f19f5c0:163","childIds":[]},{"id":"0f19f5c0:165","tag":"div","openStart":26429,"attrEnd":26524,"openEnd":26525,"closeStart":26541,"closeEnd":26547,"styleAttr":[26441,26523],"textRuns":[[26525,26541]],"parentId":"0f19f5c0:163","childIds":[]},{"id":"0f19f5c0:166","tag":"div","openStart":26558,"attrEnd":26639,"openEnd":26640,"closeStart":26660,"closeEnd":26666,"styleAttr":[26570,26638],"textRuns":[[26640,26660]],"parentId":"0f19f5c0:163","childIds":[]},{"id":"0f19f5c0:167","tag":"div","openStart":26703,"attrEnd":26847,"openEnd":26848,"closeStart":26863,"closeEnd":26869,"styleAttr":[26715,26846],"textRuns":[[26848,26863]],"parentId":"0f19f5c0:154","childIds":[]},{"id":"0f19f5c0:168","tag":"div","openStart":26886,"attrEnd":26982,"openEnd":26983,"closeStart":28436,"closeEnd":28442,"styleAttr":[26898,26981],"textRuns":[[26983,26990],[28431,28436]],"parentId":"0f19f5c0:146","childIds":["0f19f5c0:169"]},{"id":"0f19f5c0:169","tag":"sc-for","openStart":26990,"attrEnd":27050,"openEnd":27051,"closeStart":28422,"closeEnd":28431,"textRuns":[[27051,27060],[28415,28422]],"parentId":"0f19f5c0:168","childIds":["0f19f5c0:170"]},{"id":"0f19f5c0:170","tag":"div","openStart":27060,"attrEnd":27217,"openEnd":27218,"closeStart":28409,"closeEnd":28415,"styleAttr":[27072,27216],"textRuns":[[27218,27229],[27876,27887],[28400,28409]],"parentId":"0f19f5c0:169","childIds":["0f19f5c0:171","0f19f5c0:176"]},{"id":"0f19f5c0:171","tag":"div","openStart":27229,"attrEnd":27261,"openEnd":27262,"closeStart":27870,"closeEnd":27876,"styleAttr":[27241,27260],"textRuns":[[27262,27275],[27733,27746],[27859,27870]],"parentId":"0f19f5c0:170","childIds":["0f19f5c0:172","0f19f5c0:175"]},{"id":"0f19f5c0:172","tag":"div","openStart":27275,"attrEnd":27346,"openEnd":27347,"closeStart":27727,"closeEnd":27733,"styleAttr":[27287,27345],"textRuns":[[27347,27362],[27464,27479],[27714,27727]],"parentId":"0f19f5c0:171","childIds":["0f19f5c0:173","0f19f5c0:174"]},{"id":"0f19f5c0:173","tag":"span","openStart":27362,"attrEnd":27445,"openEnd":27446,"closeStart":27457,"closeEnd":27464,"styleAttr":[27375,27444],"textRuns":[[27446,27457]],"parentId":"0f19f5c0:172","childIds":[]},{"id":"0f19f5c0:174","tag":"span","openStart":27479,"attrEnd":27692,"openEnd":27693,"closeStart":27707,"closeEnd":27714,"styleAttr":[27492,27691],"textRuns":[[27693,27707]],"parentId":"0f19f5c0:172","childIds":[]},{"id":"0f19f5c0:175","tag":"div","openStart":27746,"attrEnd":27840,"openEnd":27841,"closeStart":27853,"closeEnd":27859,"styleAttr":[27758,27839],"textRuns":[[27841,27853]],"parentId":"0f19f5c0:171","childIds":[]},{"id":"0f19f5c0:176","tag":"div","openStart":27887,"attrEnd":27931,"openEnd":27932,"closeStart":28394,"closeEnd":28400,"styleAttr":[27899,27930],"textRuns":[[27932,27945],[28066,28079],[28383,28394]],"parentId":"0f19f5c0:170","childIds":["0f19f5c0:177","0f19f5c0:178"]},{"id":"0f19f5c0:177","tag":"div","openStart":27945,"attrEnd":28046,"openEnd":28047,"closeStart":28060,"closeEnd":28066,"styleAttr":[27957,28045],"textRuns":[[28047,28060]],"parentId":"0f19f5c0:176","childIds":[]},{"id":"0f19f5c0:178","tag":"button","openStart":28079,"attrEnd":28367,"openEnd":28368,"closeStart":28374,"closeEnd":28383,"styleAttr":[28121,28366],"textRuns":[[28368,28374]],"parentId":"0f19f5c0:176","childIds":[]},{"id":"0f19f5c0:179","tag":"div","openStart":28448,"attrEnd":28516,"openEnd":28517,"closeStart":28851,"closeEnd":28857,"styleAttr":[28460,28515],"textRuns":[[28517,28524],[28846,28851]],"parentId":"0f19f5c0:146","childIds":["0f19f5c0:180"]},{"id":"0f19f5c0:180","tag":"button","openStart":28524,"attrEnd":28809,"openEnd":28810,"closeStart":28837,"closeEnd":28846,"styleAttr":[28565,28808],"textRuns":[[28810,28837]],"parentId":"0f19f5c0:179","childIds":[]},{"id":"0f19f5c0:181","tag":"section","openStart":28902,"attrEnd":29020,"openEnd":29021,"closeStart":34658,"closeEnd":34668,"styleAttr":[28931,29019],"textRuns":[[29021,29026],[29201,29206],[29386,29391],[29570,29576],[30947,30953],[34655,34658]],"parentId":"0f19f5c0:17","childIds":["0f19f5c0:182","0f19f5c0:183","0f19f5c0:184","0f19f5c0:185","0f19f5c0:193"]},{"id":"0f19f5c0:182","tag":"p","openStart":29026,"attrEnd":29169,"openEnd":29170,"closeStart":29197,"closeEnd":29201,"styleAttr":[29036,29168],"textRuns":[[29170,29197]],"parentId":"0f19f5c0:181","childIds":[]},{"id":"0f19f5c0:183","tag":"h2","openStart":29206,"attrEnd":29363,"openEnd":29364,"closeStart":29381,"closeEnd":29386,"styleAttr":[29217,29362],"textRuns":[[29364,29381]],"parentId":"0f19f5c0:181","childIds":[]},{"id":"0f19f5c0:184","tag":"p","openStart":29391,"attrEnd":29513,"openEnd":29514,"closeStart":29566,"closeEnd":29570,"styleAttr":[29401,29512],"textRuns":[[29514,29566]],"parentId":"0f19f5c0:181","childIds":[]},{"id":"0f19f5c0:185","tag":"div","openStart":29576,"attrEnd":29765,"openEnd":29766,"closeStart":30941,"closeEnd":30947,"styleAttr":[29588,29764],"textRuns":[[29766,29773],[29922,29929],[30936,30941]],"parentId":"0f19f5c0:181","childIds":["0f19f5c0:186","0f19f5c0:187"]},{"id":"0f19f5c0:186","tag":"img","openStart":29773,"attrEnd":29921,"openEnd":29922,"closeEnd":29922,"styleAttr":[29809,29920],"textRuns":[],"parentId":"0f19f5c0:185","childIds":[]},{"id":"0f19f5c0:187","tag":"div","openStart":29929,"attrEnd":29961,"openEnd":29962,"closeStart":30930,"closeEnd":30936,"styleAttr":[29941,29960],"textRuns":[[29962,29971],[30074,30083],[30229,30238],[30923,30930]],"parentId":"0f19f5c0:185","childIds":["0f19f5c0:188","0f19f5c0:189","0f19f5c0:190"]},{"id":"0f19f5c0:188","tag":"div","openStart":29971,"attrEnd":30053,"openEnd":30054,"closeStart":30068,"closeEnd":30074,"styleAttr":[29983,30052],"textRuns":[[30054,30068]],"parentId":"0f19f5c0:187","childIds":[]},{"id":"0f19f5c0:189","tag":"div","openStart":30083,"attrEnd":30194,"openEnd":30195,"closeStart":30223,"closeEnd":30229,"styleAttr":[30095,30193],"textRuns":[[30195,30223]],"parentId":"0f19f5c0:187","childIds":[]},{"id":"0f19f5c0:190","tag":"div","openStart":30238,"attrEnd":30294,"openEnd":30295,"closeStart":30917,"closeEnd":30923,"styleAttr":[30250,30293],"textRuns":[[30295,30306],[30596,30607],[30908,30917]],"parentId":"0f19f5c0:187","childIds":["0f19f5c0:191","0f19f5c0:192"]},{"id":"0f19f5c0:191","tag":"a","openStart":30306,"attrEnd":30584,"openEnd":30585,"closeStart":30592,"closeEnd":30596,"styleAttr":[30342,30583],"textRuns":[[30585,30592]],"parentId":"0f19f5c0:190","childIds":[]},{"id":"0f19f5c0:192","tag":"a","openStart":30607,"attrEnd":30897,"openEnd":30898,"closeStart":30904,"closeEnd":30908,"styleAttr":[30655,30896],"textRuns":[[30898,30904]],"parentId":"0f19f5c0:190","childIds":[]},{"id":"0f19f5c0:193","tag":"div","openStart":30953,"attrEnd":31043,"openEnd":31044,"closeStart":34649,"closeEnd":34655,"styleAttr":[30965,31042],"textRuns":[[31044,31051],[31296,31303],[31562,31569],[32087,32094],[32363,32370],[32653,32660],[34151,34158],[34426,34433],[34644,34649]],"parentId":"0f19f5c0:181","childIds":["0f19f5c0:194","0f19f5c0:195","0f19f5c0:196","0f19f5c0:200","0f19f5c0:201","0f19f5c0:204","0f19f5c0:205"]},{"id":"0f19f5c0:194","tag":"input","openStart":31051,"attrEnd":31295,"openEnd":31296,"closeEnd":31296,"styleAttr":[31112,31294],"textRuns":[],"parentId":"0f19f5c0:193","childIds":[]},{"id":"0f19f5c0:195","tag":"input","openStart":31303,"attrEnd":31561,"openEnd":31562,"closeEnd":31562,"styleAttr":[31378,31560],"textRuns":[],"parentId":"0f19f5c0:193","childIds":[]},{"id":"0f19f5c0:196","tag":"select","openStart":31569,"attrEnd":31864,"openEnd":31865,"closeStart":32078,"closeEnd":32087,"styleAttr":[31641,31863],"textRuns":[[31865,31874],[31923,31932],[32071,32078]],"parentId":"0f19f5c0:193","childIds":["0f19f5c0:197","0f19f5c0:198"]},{"id":"0f19f5c0:197","tag":"option","openStart":31874,"attrEnd":31890,"openEnd":31891,"textRuns":[[31891,31914]],"parentId":"0f19f5c0:196","childIds":[]},{"id":"0f19f5c0:198","tag":"sc-for","openStart":31932,"attrEnd":31997,"openEnd":31998,"closeStart":32062,"closeEnd":32071,"textRuns":[[31998,32009],[32053,32062]],"parentId":"0f19f5c0:196","childIds":["0f19f5c0:199"]},{"id":"0f19f5c0:199","tag":"option","openStart":32009,"attrEnd":32034,"openEnd":32035,"textRuns":[[32035,32044]],"parentId":"0f19f5c0:198","childIds":[]},{"id":"0f19f5c0:200","tag":"input","openStart":32094,"attrEnd":32362,"openEnd":32363,"closeEnd":32363,"styleAttr":[32179,32361],"textRuns":[],"parentId":"0f19f5c0:193","childIds":[]},{"id":"0f19f5c0:201","tag":"button","openStart":32660,"attrEnd":32976,"openEnd":32977,"closeStart":34142,"closeEnd":34151,"styleAttr":[32704,32975],"textRuns":[[32977,32986],[34105,34142]],"parentId":"0f19f5c0:193","childIds":["0f19f5c0:202"]},{"id":"0f19f5c0:202","tag":"svg","openStart":32986,"attrEnd":33048,"openEnd":33049,"closeStart":34099,"closeEnd":34105,"textRuns":[],"parentId":"0f19f5c0:201","childIds":["0f19f5c0:203"]},{"id":"0f19f5c0:203","tag":"path","openStart":33049,"attrEnd":34097,"openEnd":34099,"textRuns":[],"parentId":"0f19f5c0:202","childIds":[]},{"id":"0f19f5c0:204","tag":"button","openStart":34158,"attrEnd":34397,"openEnd":34398,"closeStart":34417,"closeEnd":34426,"styleAttr":[34199,34396],"textRuns":[[34398,34417]],"parentId":"0f19f5c0:193","childIds":[]},{"id":"0f19f5c0:205","tag":"p","openStart":34433,"attrEnd":34543,"openEnd":34544,"closeStart":34640,"closeEnd":34644,"styleAttr":[34443,34542],"textRuns":[[34544,34640]],"parentId":"0f19f5c0:193","childIds":[]},{"id":"0f19f5c0:206","tag":"section","openStart":34688,"attrEnd":34790,"openEnd":34791,"closeStart":40207,"closeEnd":40217,"styleAttr":[34704,34789],"textRuns":[[34791,34796],[34952,34957],[35134,35139],[40204,40207]],"parentId":"0f19f5c0:17","childIds":["0f19f5c0:207","0f19f5c0:208","0f19f5c0:209"]},{"id":"0f19f5c0:207","tag":"h2","openStart":34796,"attrEnd":34938,"openEnd":34939,"closeStart":34947,"closeEnd":34952,"styleAttr":[34807,34937],"textRuns":[[34939,34947]],"parentId":"0f19f5c0:206","childIds":[]},{"id":"0f19f5c0:208","tag":"p","openStart":34957,"attrEnd":35100,"openEnd":35101,"closeStart":35130,"closeEnd":35134,"styleAttr":[34967,35099],"textRuns":[[35101,35130]],"parentId":"0f19f5c0:206","childIds":[]},{"id":"0f19f5c0:209","tag":"div","openStart":35139,"attrEnd":35219,"openEnd":35220,"closeStart":40198,"closeEnd":40204,"styleAttr":[35151,35218],"textRuns":[[35220,35227],[36455,36462],[37723,37730],[38965,38972],[40193,40198]],"parentId":"0f19f5c0:206","childIds":["0f19f5c0:210","0f19f5c0:219","0f19f5c0:228","0f19f5c0:237"]},{"id":"0f19f5c0:210","tag":"div","openStart":35227,"attrEnd":35371,"openEnd":35372,"closeStart":36449,"closeEnd":36455,"styleAttr":[35239,35370],"textRuns":[[35372,35381],[35499,35508],[35646,35655],[36442,36449]],"parentId":"0f19f5c0:209","childIds":["0f19f5c0:211","0f19f5c0:212","0f19f5c0:213"]},{"id":"0f19f5c0:211","tag":"img","openStart":35381,"attrEnd":35498,"openEnd":35499,"closeEnd":35499,"styleAttr":[35417,35497],"textRuns":[],"parentId":"0f19f5c0:210","childIds":[]},{"id":"0f19f5c0:212","tag":"div","openStart":35508,"attrEnd":35639,"openEnd":35640,"closeStart":35640,"closeEnd":35646,"styleAttr":[35520,35638],"textRuns":[],"parentId":"0f19f5c0:210","childIds":[]},{"id":"0f19f5c0:213","tag":"div","openStart":35655,"attrEnd":35736,"openEnd":35737,"closeStart":36436,"closeEnd":36442,"styleAttr":[35667,35735],"textRuns":[[35737,35748],[35873,35884],[35991,36002],[36427,36436]],"parentId":"0f19f5c0:210","childIds":["0f19f5c0:214","0f19f5c0:215","0f19f5c0:216"]},{"id":"0f19f5c0:214","tag":"h3","openStart":35748,"attrEnd":35853,"openEnd":35854,"closeStart":35868,"closeEnd":35873,"styleAttr":[35759,35852],"textRuns":[[35854,35868]],"parentId":"0f19f5c0:213","childIds":[]},{"id":"0f19f5c0:215","tag":"p","openStart":35884,"attrEnd":35969,"openEnd":35970,"closeStart":35987,"closeEnd":35991,"styleAttr":[35894,35968],"textRuns":[[35970,35987]],"parentId":"0f19f5c0:213","childIds":[]},{"id":"0f19f5c0:216","tag":"div","openStart":36002,"attrEnd":36054,"openEnd":36055,"closeStart":36421,"closeEnd":36427,"styleAttr":[36014,36053],"textRuns":[[36055,36068],[36232,36245],[36410,36421]],"parentId":"0f19f5c0:213","childIds":["0f19f5c0:217","0f19f5c0:218"]},{"id":"0f19f5c0:217","tag":"span","openStart":36068,"attrEnd":36215,"openEnd":36216,"closeStart":36225,"closeEnd":36232,"styleAttr":[36081,36214],"textRuns":[[36216,36225]],"parentId":"0f19f5c0:216","childIds":[]},{"id":"0f19f5c0:218","tag":"span","openStart":36245,"attrEnd":36392,"openEnd":36393,"closeStart":36403,"closeEnd":36410,"styleAttr":[36258,36391],"textRuns":[[36393,36403]],"parentId":"0f19f5c0:216","childIds":[]},{"id":"0f19f5c0:219","tag":"div","openStart":36462,"attrEnd":36606,"openEnd":36607,"closeStart":37717,"closeEnd":37723,"styleAttr":[36474,36605],"textRuns":[[36607,36616],[36734,36743],[36881,36890],[37710,37717]],"parentId":"0f19f5c0:209","childIds":["0f19f5c0:220","0f19f5c0:221","0f19f5c0:222"]},{"id":"0f19f5c0:220","tag":"img","openStart":36616,"attrEnd":36733,"openEnd":36734,"closeEnd":36734,"styleAttr":[36652,36732],"textRuns":[],"parentId":"0f19f5c0:219","childIds":[]},{"id":"0f19f5c0:221","tag":"div","openStart":36743,"attrEnd":36874,"openEnd":36875,"closeStart":36875,"closeEnd":36881,"styleAttr":[36755,36873],"textRuns":[],"parentId":"0f19f5c0:219","childIds":[]},{"id":"0f19f5c0:222","tag":"div","openStart":36890,"attrEnd":36971,"openEnd":36972,"closeStart":37704,"closeEnd":37710,"styleAttr":[36902,36970],"textRuns":[[36972,36983],[37135,37146],[37252,37263],[37695,37704]],"parentId":"0f19f5c0:219","childIds":["0f19f5c0:223","0f19f5c0:224","0f19f5c0:225"]},{"id":"0f19f5c0:223","tag":"h3","openStart":36983,"attrEnd":37105,"openEnd":37106,"closeStart":37130,"closeEnd":37135,"styleAttr":[36994,37104],"textRuns":[[37106,37130]],"parentId":"0f19f5c0:222","childIds":[]},{"id":"0f19f5c0:224","tag":"p","openStart":37146,"attrEnd":37231,"openEnd":37232,"closeStart":37248,"closeEnd":37252,"styleAttr":[37156,37230],"textRuns":[[37232,37248]],"parentId":"0f19f5c0:222","childIds":[]},{"id":"0f19f5c0:225","tag":"div","openStart":37263,"attrEnd":37315,"openEnd":37316,"closeStart":37689,"closeEnd":37695,"styleAttr":[37275,37314],"textRuns":[[37316,37329],[37498,37511],[37678,37689]],"parentId":"0f19f5c0:222","childIds":["0f19f5c0:226","0f19f5c0:227"]},{"id":"0f19f5c0:226","tag":"span","openStart":37329,"attrEnd":37476,"openEnd":37477,"closeStart":37491,"closeEnd":37498,"styleAttr":[37342,37475],"textRuns":[[37477,37491]],"parentId":"0f19f5c0:225","childIds":[]},{"id":"0f19f5c0:227","tag":"span","openStart":37511,"attrEnd":37658,"openEnd":37659,"closeStart":37671,"closeEnd":37678,"styleAttr":[37524,37657],"textRuns":[[37659,37671]],"parentId":"0f19f5c0:225","childIds":[]},{"id":"0f19f5c0:228","tag":"div","openStart":37730,"attrEnd":37874,"openEnd":37875,"closeStart":38959,"closeEnd":38965,"styleAttr":[37742,37873],"textRuns":[[37875,37884],[38002,38011],[38149,38158],[38952,38959]],"parentId":"0f19f5c0:209","childIds":["0f19f5c0:229","0f19f5c0:230","0f19f5c0:231"]},{"id":"0f19f5c0:229","tag":"img","openStart":37884,"attrEnd":38001,"openEnd":38002,"closeEnd":38002,"styleAttr":[37920,38000],"textRuns":[],"parentId":"0f19f5c0:228","childIds":[]},{"id":"0f19f5c0:230","tag":"div","openStart":38011,"attrEnd":38142,"openEnd":38143,"closeStart":38143,"closeEnd":38149,"styleAttr":[38023,38141],"textRuns":[],"parentId":"0f19f5c0:228","childIds":[]},{"id":"0f19f5c0:231","tag":"div","openStart":38158,"attrEnd":38239,"openEnd":38240,"closeStart":38946,"closeEnd":38952,"styleAttr":[38170,38238],"textRuns":[[38240,38251],[38376,38387],[38505,38516],[38937,38946]],"parentId":"0f19f5c0:228","childIds":["0f19f5c0:232","0f19f5c0:233","0f19f5c0:234"]},{"id":"0f19f5c0:232","tag":"h3","openStart":38251,"attrEnd":38356,"openEnd":38357,"closeStart":38371,"closeEnd":38376,"styleAttr":[38262,38355],"textRuns":[[38357,38371]],"parentId":"0f19f5c0:231","childIds":[]},{"id":"0f19f5c0:233","tag":"p","openStart":38387,"attrEnd":38472,"openEnd":38473,"closeStart":38501,"closeEnd":38505,"styleAttr":[38397,38471],"textRuns":[[38473,38501]],"parentId":"0f19f5c0:231","childIds":[]},{"id":"0f19f5c0:234","tag":"div","openStart":38516,"attrEnd":38568,"openEnd":38569,"closeStart":38931,"closeEnd":38937,"styleAttr":[38528,38567],"textRuns":[[38569,38582],[38745,38758],[38920,38931]],"parentId":"0f19f5c0:231","childIds":["0f19f5c0:235","0f19f5c0:236"]},{"id":"0f19f5c0:235","tag":"span","openStart":38582,"attrEnd":38729,"openEnd":38730,"closeStart":38738,"closeEnd":38745,"styleAttr":[38595,38728],"textRuns":[[38730,38738]],"parentId":"0f19f5c0:234","childIds":[]},{"id":"0f19f5c0:236","tag":"span","openStart":38758,"attrEnd":38905,"openEnd":38906,"closeStart":38913,"closeEnd":38920,"styleAttr":[38771,38904],"textRuns":[[38906,38913]],"parentId":"0f19f5c0:234","childIds":[]},{"id":"0f19f5c0:237","tag":"div","openStart":38972,"attrEnd":39116,"openEnd":39117,"closeStart":40187,"closeEnd":40193,"styleAttr":[38984,39115],"textRuns":[[39117,39126],[39244,39253],[39391,39400],[40180,40187]],"parentId":"0f19f5c0:209","childIds":["0f19f5c0:238","0f19f5c0:239","0f19f5c0:240"]},{"id":"0f19f5c0:238","tag":"img","openStart":39126,"attrEnd":39243,"openEnd":39244,"closeEnd":39244,"styleAttr":[39162,39242],"textRuns":[],"parentId":"0f19f5c0:237","childIds":[]},{"id":"0f19f5c0:239","tag":"div","openStart":39253,"attrEnd":39384,"openEnd":39385,"closeStart":39385,"closeEnd":39391,"styleAttr":[39265,39383],"textRuns":[],"parentId":"0f19f5c0:237","childIds":[]},{"id":"0f19f5c0:240","tag":"div","openStart":39400,"attrEnd":39481,"openEnd":39482,"closeStart":40174,"closeEnd":40180,"styleAttr":[39412,39480],"textRuns":[[39482,39493],[39617,39628],[39731,39742],[40165,40174]],"parentId":"0f19f5c0:237","childIds":["0f19f5c0:241","0f19f5c0:242","0f19f5c0:243"]},{"id":"0f19f5c0:241","tag":"h3","openStart":39493,"attrEnd":39598,"openEnd":39599,"closeStart":39612,"closeEnd":39617,"styleAttr":[39504,39597],"textRuns":[[39599,39612]],"parentId":"0f19f5c0:240","childIds":[]},{"id":"0f19f5c0:242","tag":"p","openStart":39628,"attrEnd":39713,"openEnd":39714,"closeStart":39727,"closeEnd":39731,"styleAttr":[39638,39712],"textRuns":[[39714,39727]],"parentId":"0f19f5c0:240","childIds":[]},{"id":"0f19f5c0:243","tag":"div","openStart":39742,"attrEnd":39794,"openEnd":39795,"closeStart":40159,"closeEnd":40165,"styleAttr":[39754,39793],"textRuns":[[39795,39808],[39973,39986],[40148,40159]],"parentId":"0f19f5c0:240","childIds":["0f19f5c0:244","0f19f5c0:245"]},{"id":"0f19f5c0:244","tag":"span","openStart":39808,"attrEnd":39955,"openEnd":39956,"closeStart":39966,"closeEnd":39973,"styleAttr":[39821,39954],"textRuns":[[39956,39966]],"parentId":"0f19f5c0:243","childIds":[]},{"id":"0f19f5c0:245","tag":"span","openStart":39986,"attrEnd":40133,"openEnd":40134,"closeStart":40141,"closeEnd":40148,"styleAttr":[39999,40132],"textRuns":[[40134,40141]],"parentId":"0f19f5c0:243","childIds":[]},{"id":"0f19f5c0:246","tag":"footer","openStart":40239,"attrEnd":40391,"openEnd":40392,"closeStart":42312,"closeEnd":42321,"styleAttr":[40254,40390],"textRuns":[[40392,40397],[40783,40788],[42055,42060],[42309,42312]],"parentId":"0f19f5c0:17","childIds":["0f19f5c0:247","0f19f5c0:253","0f19f5c0:265"]},{"id":"0f19f5c0:247","tag":"div","openStart":40397,"attrEnd":40401,"openEnd":40402,"closeStart":40777,"closeEnd":40783,"textRuns":[[40402,40409],[40617,40624],[40772,40777]],"parentId":"0f19f5c0:246","childIds":["0f19f5c0:248","0f19f5c0:250"]},{"id":"0f19f5c0:248","tag":"div","openStart":40409,"attrEnd":40535,"openEnd":40536,"closeStart":40611,"closeEnd":40617,"styleAttr":[40421,40534],"textRuns":[[40536,40548],[40604,40611]],"parentId":"0f19f5c0:247","childIds":["0f19f5c0:249"]},{"id":"0f19f5c0:249","tag":"span","openStart":40548,"attrEnd":40594,"openEnd":40595,"closeStart":40597,"closeEnd":40604,"styleAttr":[40561,40593],"textRuns":[[40595,40597]],"parentId":"0f19f5c0:248","childIds":[]},{"id":"0f19f5c0:250","tag":"div","openStart":40624,"attrEnd":40699,"openEnd":40700,"closeStart":40766,"closeEnd":40772,"styleAttr":[40636,40698],"textRuns":[[40700,40721],[40725,40739],[40743,40766]],"parentId":"0f19f5c0:247","childIds":["0f19f5c0:251","0f19f5c0:252"]},{"id":"0f19f5c0:251","tag":"br","openStart":40721,"attrEnd":40724,"openEnd":40725,"closeEnd":40725,"textRuns":[],"parentId":"0f19f5c0:250","childIds":[]},{"id":"0f19f5c0:252","tag":"br","openStart":40739,"attrEnd":40742,"openEnd":40743,"closeEnd":40743,"textRuns":[],"parentId":"0f19f5c0:250","childIds":[]},{"id":"0f19f5c0:253","tag":"div","openStart":40788,"attrEnd":40838,"openEnd":40839,"closeStart":42049,"closeEnd":42055,"styleAttr":[40800,40837],"textRuns":[[40839,40846],[41500,41507],[42044,42049]],"parentId":"0f19f5c0:246","childIds":["0f19f5c0:254","0f19f5c0:260"]},{"id":"0f19f5c0:254","tag":"div","openStart":40846,"attrEnd":40906,"openEnd":40907,"closeStart":41494,"closeEnd":41500,"styleAttr":[40858,40905],"textRuns":[[40907,40916],[41043,41052],[41155,41164],[41267,41276],[41379,41388],[41487,41494]],"parentId":"0f19f5c0:253","childIds":["0f19f5c0:255","0f19f5c0:256","0f19f5c0:257","0f19f5c0:258","0f19f5c0:259"]},{"id":"0f19f5c0:255","tag":"h4","openStart":40916,"attrEnd":41027,"openEnd":41028,"closeStart":41038,"closeEnd":41043,"styleAttr":[40927,41026],"textRuns":[[41028,41038]],"parentId":"0f19f5c0:254","childIds":[]},{"id":"0f19f5c0:256","tag":"a","openStart":41052,"attrEnd":41139,"openEnd":41140,"closeStart":41151,"closeEnd":41155,"styleAttr":[41071,41138],"textRuns":[[41140,41151]],"parentId":"0f19f5c0:254","childIds":[]},{"id":"0f19f5c0:257","tag":"a","openStart":41164,"attrEnd":41251,"openEnd":41252,"closeStart":41263,"closeEnd":41267,"styleAttr":[41183,41250],"textRuns":[[41252,41263]],"parentId":"0f19f5c0:254","childIds":[]},{"id":"0f19f5c0:258","tag":"a","openStart":41276,"attrEnd":41363,"openEnd":41364,"closeStart":41375,"closeEnd":41379,"styleAttr":[41295,41362],"textRuns":[[41364,41375]],"parentId":"0f19f5c0:254","childIds":[]},{"id":"0f19f5c0:259","tag":"a","openStart":41388,"attrEnd":41475,"openEnd":41476,"closeStart":41483,"closeEnd":41487,"styleAttr":[41407,41474],"textRuns":[[41476,41483]],"parentId":"0f19f5c0:254","childIds":[]},{"id":"0f19f5c0:260","tag":"div","openStart":41507,"attrEnd":41567,"openEnd":41568,"closeStart":42038,"closeEnd":42044,"styleAttr":[41519,41566],"textRuns":[[41568,41577],[41705,41714],[41815,41824],[41927,41936],[42031,42038]],"parentId":"0f19f5c0:253","childIds":["0f19f5c0:261","0f19f5c0:262","0f19f5c0:263","0f19f5c0:264"]},{"id":"0f19f5c0:261","tag":"h4","openStart":41577,"attrEnd":41688,"openEnd":41689,"closeStart":41700,"closeEnd":41705,"styleAttr":[41588,41687],"textRuns":[[41689,41700]],"parentId":"0f19f5c0:260","childIds":[]},{"id":"0f19f5c0:262","tag":"a","openStart":41714,"attrEnd":41801,"openEnd":41802,"closeStart":41811,"closeEnd":41815,"styleAttr":[41733,41800],"textRuns":[[41802,41811]],"parentId":"0f19f5c0:260","childIds":[]},{"id":"0f19f5c0:263","tag":"a","openStart":41824,"attrEnd":41911,"openEnd":41912,"closeStart":41923,"closeEnd":41927,"styleAttr":[41843,41910],"textRuns":[[41912,41923]],"parentId":"0f19f5c0:260","childIds":[]},{"id":"0f19f5c0:264","tag":"a","openStart":41936,"attrEnd":42023,"openEnd":42024,"closeStart":42027,"closeEnd":42031,"styleAttr":[41955,42022],"textRuns":[[42024,42027]],"parentId":"0f19f5c0:260","childIds":[]},{"id":"0f19f5c0:265","tag":"div","openStart":42060,"attrEnd":42223,"openEnd":42224,"closeStart":42303,"closeEnd":42309,"styleAttr":[42072,42222],"textRuns":[[42224,42303]],"parentId":"0f19f5c0:246","childIds":[]}]}</script></body></html>
